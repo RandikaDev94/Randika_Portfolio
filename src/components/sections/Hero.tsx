@@ -32,6 +32,9 @@ export default function Hero() {
   const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ["0%", "100%"]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    // Explicitly bypass physics tracking on touch devices to save massive mobile battery/CPU
+    if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) return;
+
     const rect = e.currentTarget.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
@@ -59,7 +62,7 @@ export default function Hero() {
   ];
 
   return (
-    <section id="home" className="min-h-screen relative flex items-center justify-center overflow-hidden pt-20 lg:pt-0 pb-16 lg:pb-20">
+    <section id="home" className="min-h-[100dvh] relative flex items-center justify-center overflow-hidden pt-20 lg:pt-0 pb-16 lg:pb-20">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/5 z-0" />
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col lg:grid lg:grid-cols-2 lg:gap-8 items-center h-full">
@@ -89,9 +92,9 @@ export default function Hero() {
 
             {/* Ambient Bobbing Wrapper */}
             <motion.div
-              animate={{ y: [-12, 12, -12] }}
+              animate={{ y: [-10, 10, -10] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0"
+              className="absolute inset-0 will-change-transform [transform:translateZ(0)]"
             >
               {/* DESKTOP ONLY: 3D Interactive Card (Requires Heavy GPU Compositing) */}
               <motion.div

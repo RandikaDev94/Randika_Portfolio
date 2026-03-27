@@ -12,6 +12,9 @@ export default function Experience() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     
+    // Crucial for mobile: Ignore random viewport resizes triggered by the phone's address bar expanding/colliding
+    ScrollTrigger.config({ ignoreMobileResize: true });
+    
     const ctx = gsap.context(() => {
       const cards = gsap.utils.toArray<HTMLElement>(".exp-card");
       
