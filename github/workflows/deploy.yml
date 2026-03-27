@@ -1,0 +1,36 @@
+name: Deploy Next.js Portfolio to Hostinger
+
+on:
+  push:
+    branches:
+      - main # This triggers the deploy whenever you push to the main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Matches the latest stable environment
+          cache: 'npm'
+
+      - name: 🛠️ Install Dependencies
+        run: npm install
+
+      - name: 🏗️ Build Project
+        run: npm run build # This creates the 'out' folder because of your next.config.ts
+
+      - name: 🚀 Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./out/  # Syncs only the built static files
+          server-dir: ./public_html/ # The standard Hostinger web directory
+          state-name: .ftp-deploy-sync-state.json # Keeps track of changes for faster uploads
