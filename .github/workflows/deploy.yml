@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./out/
           server-dir: ./
-          protocol: ftp       # Explicitly use FTP
-          port: 21            # Standard FTP port
-          security: loose     # Ignores certificate mismatches common in shared hosting
-          timeout: 60000      # Gives it 1 minute to connect
+          protocol: ftp
+          port: 21
+          security: loose
+          dangerous-clean-slate: true
