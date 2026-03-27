@@ -71,7 +71,7 @@ export default function Hero() {
   ];
 
   return (
-    <section id="home" className="min-h-[100dvh] relative flex items-center justify-center overflow-hidden pt-16 lg:pt-0 pb-6 lg:pb-20">
+    <section id="home" className="min-h-[100dvh] relative flex items-center justify-center overflow-hidden pt-14 lg:pt-0 pb-6 lg:pb-20">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/5 z-0" />
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col lg:grid lg:grid-cols-2 lg:gap-8 items-center h-full">
@@ -81,10 +81,10 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="order-1 w-full text-center flex flex-col items-center lg:hidden mb-2 will-change-[opacity]"
+          className="order-1 w-full text-center flex flex-col items-center lg:hidden mb-4 will-change-[opacity]"
         >
-          <h2 className="text-lg sm:text-2xl font-medium text-accent mb-1 uppercase tracking-wider">I AM</h2>
-          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight flex flex-col items-center leading-none">
+          <h2 className="text-xl sm:text-2xl font-medium text-accent mb-1 uppercase tracking-wider">I AM</h2>
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight flex flex-col items-center leading-[1.05]">
             {PORTFOLIO_DATA.name.split(" ").map((word, i) => (
               <span key={i} className="block">{word}</span>
             ))}
@@ -100,7 +100,7 @@ export default function Hero() {
           style={isTouchDevice ? {} : { perspective: 1200 }}
         >
           {/* Layout Wrapper for Image & Border Badges */}
-          <div className="relative w-[11rem] h-[16rem] sm:w-[20rem] sm:h-[28rem] lg:w-[26rem] lg:h-[36rem] xl:w-[30rem] xl:h-[42rem]">
+          <div className="relative w-[15rem] h-[21.5rem] sm:w-[20rem] sm:h-[28rem] lg:w-[26rem] lg:h-[36rem] xl:w-[30rem] xl:h-[42rem]">
 
             {/* Ambient Bobbing Wrapper */}
             <motion.div
