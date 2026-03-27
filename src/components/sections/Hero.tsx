@@ -71,7 +71,7 @@ export default function Hero() {
   ];
 
   return (
-    <section id="home" className="min-h-[100dvh] relative flex items-center justify-center overflow-hidden pt-20 lg:pt-0 pb-16 lg:pb-20">
+    <section id="home" className="min-h-[100dvh] relative flex items-center justify-center overflow-hidden pt-16 lg:pt-0 pb-6 lg:pb-20">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/5 z-0" />
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col lg:grid lg:grid-cols-2 lg:gap-8 items-center h-full">
@@ -81,10 +81,10 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="order-1 w-full text-center flex flex-col items-center lg:hidden mb-4 will-change-[opacity]"
+          className="order-1 w-full text-center flex flex-col items-center lg:hidden mb-2 will-change-[opacity]"
         >
-          <h2 className="text-xl sm:text-2xl font-medium text-accent mb-1 uppercase tracking-wider">I AM</h2>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight flex flex-col items-center leading-[1.1]">
+          <h2 className="text-lg sm:text-2xl font-medium text-accent mb-1 uppercase tracking-wider">I AM</h2>
+          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight flex flex-col items-center leading-none">
             {PORTFOLIO_DATA.name.split(" ").map((word, i) => (
               <span key={i} className="block">{word}</span>
             ))}
@@ -100,7 +100,7 @@ export default function Hero() {
           style={isTouchDevice ? {} : { perspective: 1200 }}
         >
           {/* Layout Wrapper for Image & Border Badges */}
-          <div className="relative w-[14rem] h-[20rem] sm:w-[20rem] sm:h-[28rem] lg:w-[26rem] lg:h-[36rem] xl:w-[30rem] xl:h-[42rem]">
+          <div className="relative w-[11rem] h-[16rem] sm:w-[20rem] sm:h-[28rem] lg:w-[26rem] lg:h-[36rem] xl:w-[30rem] xl:h-[42rem]">
 
             {/* Ambient Bobbing Wrapper */}
             <motion.div
@@ -210,21 +210,21 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="flex lg:hidden justify-center mt-10 mb-4 z-50 w-full relative will-change-[opacity]"
+            className="flex lg:hidden justify-center mt-5 mb-2 z-50 w-full relative will-change-[opacity]"
           >
-            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-accent/10 border border-accent/20 backdrop-blur-sm shadow-lg shadow-accent/5">
-              <span className="relative flex h-3.5 w-3.5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 sm:px-5 sm:py-2.5 rounded-full bg-accent/10 border border-accent/20 backdrop-blur-sm shadow-lg shadow-accent/5">
+              <span className="relative flex h-2 w-2 sm:h-3.5 sm:w-3.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-accent"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 sm:h-3.5 sm:w-3.5 bg-accent"></span>
               </span>
-              <span className="text-sm font-semibold text-accent tracking-wide uppercase">Available for Freelance</span>
+              <span className="text-[10px] sm:text-sm font-semibold text-accent tracking-wide uppercase">Available for Freelance</span>
             </div>
           </motion.div>
 
         </motion.div>
 
         {/* === LEFT COLUMN / MOBILE BOTTOM: Desktop Titles, Metrics, Buttons === */}
-        <div className="order-3 lg:order-1 lg:col-start-1 lg:row-start-1 w-full text-center lg:text-left flex flex-col justify-center mt-6 lg:mt-0">
+        <div className="order-3 lg:order-1 lg:col-start-1 lg:row-start-1 w-full text-center lg:text-left flex flex-col justify-center mt-4 lg:mt-0">
 
           {/* DESKTOP ONLY: Freelance Badge */}
           <motion.div
@@ -258,21 +258,21 @@ export default function Hero() {
             initial={{ opacity: 0, y: isTouchDevice ? 0 : 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.0, duration: 0.8 }}
-            className="flex flex-wrap justify-center lg:justify-start gap-6 sm:gap-10 lg:mt-10 mb-2 will-change-[transform,opacity] [transform:translateZ(0)]"
+            className="flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-10 mt-2 lg:mt-10 mb-2 will-change-[transform,opacity] [transform:translateZ(0)]"
           >
             <div className="flex flex-col items-center lg:items-start">
-              <p className="text-3xl sm:text-4xl font-bold text-foreground">5<span className="text-accent">+</span></p>
-              <p className="text-xs sm:text-sm text-foreground/60 font-semibold tracking-wider uppercase mt-1">Years Exp.</p>
+              <p className="text-2xl sm:text-4xl font-bold text-foreground">5<span className="text-accent">+</span></p>
+              <p className="text-[10px] sm:text-sm text-foreground/60 font-semibold tracking-wider uppercase mt-1">Years Exp.</p>
             </div>
-            <div className="w-[1px] h-14 bg-foreground/10 hidden sm:block"></div>
+            <div className="w-[1px] h-10 sm:h-14 bg-foreground/10 hidden sm:block"></div>
             <div className="flex flex-col items-center lg:items-start">
-              <p className="text-3xl sm:text-4xl font-bold text-foreground">20<span className="text-accent">+</span></p>
-              <p className="text-xs sm:text-sm text-foreground/60 font-semibold tracking-wider uppercase mt-1">Projects</p>
+              <p className="text-2xl sm:text-4xl font-bold text-foreground">20<span className="text-accent">+</span></p>
+              <p className="text-[10px] sm:text-sm text-foreground/60 font-semibold tracking-wider uppercase mt-1">Projects</p>
             </div>
-            <div className="w-[1px] h-14 bg-foreground/10 hidden sm:block"></div>
+            <div className="w-[1px] h-10 sm:h-14 bg-foreground/10 hidden sm:block"></div>
             <div className="flex flex-col items-center lg:items-start">
-              <p className="text-3xl sm:text-4xl font-bold text-foreground">100<span className="text-accent">%</span></p>
-              <p className="text-xs sm:text-sm text-foreground/60 font-semibold tracking-wider uppercase mt-1">Client Focus</p>
+              <p className="text-2xl sm:text-4xl font-bold text-foreground">100<span className="text-accent">%</span></p>
+              <p className="text-[10px] sm:text-sm text-foreground/60 font-semibold tracking-wider uppercase mt-1">Client Focus</p>
             </div>
           </motion.div>
 
@@ -281,12 +281,12 @@ export default function Hero() {
             initial={{ opacity: 0, y: isTouchDevice ? 0 : 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.8 }}
-            className="flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-6 mt-12 z-20 will-change-[transform,opacity] [transform:translateZ(0)]"
+            className="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-6 mt-6 z-20 will-change-[transform,opacity] [transform:translateZ(0)]"
           >
-            <a href="#projects" className="bg-accent text-white px-8 py-3.5 lg:py-4 rounded-full font-semibold hover:bg-accent/80 transition-colors shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] text-base lg:text-lg">
+            <a href="#projects" className="bg-accent text-white px-6 py-2.5 sm:px-8 sm:py-3.5 lg:py-4 rounded-full font-semibold hover:bg-accent/80 transition-colors shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] text-sm sm:text-base lg:text-lg">
               View Work
             </a>
-            <a href="#contact" className="border border-foreground/20 bg-background/50 backdrop-blur-md px-8 py-3.5 lg:py-4 rounded-full font-semibold hover:bg-foreground/5 hover:border-foreground/40 transition-colors text-base lg:text-lg">
+            <a href="#contact" className="border border-foreground/20 bg-background/50 backdrop-blur-md px-6 py-2.5 sm:px-8 sm:py-3.5 lg:py-4 rounded-full font-semibold hover:bg-foreground/5 hover:border-foreground/40 transition-colors text-sm sm:text-base lg:text-lg">
               Contact Me
             </a>
           </motion.div>
