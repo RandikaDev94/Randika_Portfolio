@@ -31,6 +31,9 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./out/  # Syncs only the built static files
-          server-dir: ./public_html/ # The standard Hostinger web directory
-          state-name: .ftp-deploy-sync-state.json # Keeps track of changes for faster uploads
+          local-dir: ./out/
+          server-dir: ./public_html/
+          protocol: ftp       # Explicitly use FTP
+          port: 21            # Standard FTP port
+          security: loose     # Ignores certificate mismatches common in shared hosting
+          timeout: 60000      # Gives it 1 minute to connect
