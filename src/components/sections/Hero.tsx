@@ -57,6 +57,7 @@ export default function Hero() {
   };
 
   const handleMouseLeave = () => {
+    if (isTouchDevice) return;
     x.set(0);
     y.set(0);
   };
@@ -75,32 +76,31 @@ export default function Hero() {
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col lg:grid lg:grid-cols-2 lg:gap-8 items-center h-full">
 
-        {/* === MOBILE FIRST: Name Headings === */}
-        {/* Displays exclusively on mobile, visually at the very top */}
+        {/* === MOBILE FIRST: Name Headings (120Hz Optimized, No SplitText) === */}
         <motion.div
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="order-1 w-full text-center flex flex-col lg:hidden mb-4"
+          className="order-1 w-full text-center flex flex-col lg:hidden mb-4 will-change-[opacity]"
         >
-          <SplitText text="I AM" elementType="h2" className="text-xl sm:text-2xl font-medium text-accent mb-1 uppercase tracking-wider" />
-          <SplitText text={PORTFOLIO_DATA.name} elementType="h1" delay={0.2} className="text-4xl sm:text-5xl font-bold tracking-tight" />
+          <h2 className="text-xl sm:text-2xl font-medium text-accent mb-1 uppercase tracking-wider">I AM</h2>
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">{PORTFOLIO_DATA.name}</h1>
         </motion.div>
 
         {/* === RIGHT COLUMN / MOBILE MIDDLE: Image & Badges === */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: isTouchDevice ? 1 : 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
           className="order-2 lg:order-2 lg:col-start-2 lg:row-start-1 relative flex flex-col justify-center items-center lg:justify-end w-full"
-          style={{ perspective: 1200 }}
+          style={isTouchDevice ? {} : { perspective: 1200 }}
         >
           {/* Layout Wrapper for Image & Border Badges */}
           <div className="relative w-[14rem] h-[20rem] sm:w-[20rem] sm:h-[28rem] lg:w-[26rem] lg:h-[36rem] xl:w-[30rem] xl:h-[42rem]">
 
             {/* Ambient Bobbing Wrapper */}
             <motion.div
-              animate={{ y: [-10, 10, -10] }}
+              animate={{ y: isTouchDevice ? [-5, 5, -5] : [-10, 10, -10] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               className="absolute inset-0 will-change-transform [transform:translateZ(0)]"
             >
@@ -136,7 +136,7 @@ export default function Hero() {
                     <img
                       src="/profile.webp"
                       alt={PORTFOLIO_DATA.name}
-                      className="object-cover object-center w-full h-full pointer-events-none select-none transition-transform duration-700 ease-out hover:scale-105"
+                      className="object-cover object-center w-full h-full pointer-events-none select-none transition-transform duration-700 ease-out hover:scale-105 will-change-transform [transform:translateZ(0)]"
                       onError={(e) => {
                         e.currentTarget.src = `https://ui-avatars.com/api/?name=Randika+Wijesooriya&size=800&background=0a0a0a&color=3b82f6&font-size=0.33`;
                       }}
@@ -152,7 +152,7 @@ export default function Hero() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1.5, delay: 0.5 }}
-                  className="absolute -inset-4 rounded-[3rem] bg-accent/40 blur-[40px] -z-10"
+                  className="absolute -inset-4 rounded-[3rem] bg-accent/40 blur-[40px] -z-10 will-change-[opacity]"
                 />
 
                 {/* Flat Glass Card (No Glare, No 3D transform styles) */}
@@ -161,7 +161,7 @@ export default function Hero() {
                     <img
                       src="/profile.webp"
                       alt={PORTFOLIO_DATA.name}
-                      className="object-cover object-center w-full h-full pointer-events-none select-none"
+                      className="object-cover object-center w-full h-full pointer-events-none select-none will-change-transform [transform:translateZ(0)]"
                       onError={(e) => {
                         e.currentTarget.src = `https://ui-avatars.com/api/?name=Randika+Wijesooriya&size=800&background=0a0a0a&color=3b82f6&font-size=0.33`;
                       }}
@@ -171,23 +171,41 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            {/* Static Edge Badges - Now active across ALL device sizes! */}
+            {/* DESKTOP Badges (Scale/Ease mechanics) */}
             {PORTFOLIO_DATA.roles.map((role, i) => (
               <motion.div
-                key={`float-${role}`}
+                key={`desk-badge-${role}`}
                 custom={i}
                 initial="hidden"
                 animate="visible"
                 variants={roleVariants}
-                className={`absolute ${badgePositions[i] || ""} z-50 bg-white/5 border border-white/10 rounded-2xl p-2 sm:p-4 lg:p-6 backdrop-blur-3xl saturate-150 shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] pointer-events-none whitespace-nowrap`}
+                className={`hidden lg:block absolute ${badgePositions[i] || ""} z-50 bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-3xl saturate-150 shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] pointer-events-none whitespace-nowrap will-change-transform [transform:translateZ(0)]`}
               >
-                <h3 className="text-[10px] sm:text-sm lg:text-lg font-bold text-foreground/90 drop-shadow-md tracking-wide">{role}</h3>
+                <h3 className="text-lg font-bold text-foreground/90 drop-shadow-md tracking-wide">{role}</h3>
+              </motion.div>
+            ))}
+
+            {/* MOBILE Badges (120Hz Optimized: Opacity fading ONLY, no spatial scaling) */}
+            {PORTFOLIO_DATA.roles.map((role, i) => (
+              <motion.div
+                key={`mob-badge-${role}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.5 + i * 0.2 }}
+                className={`block lg:hidden absolute ${badgePositions[i] || ""} z-50 bg-white/5 border border-white/10 rounded-2xl p-2 sm:p-4 backdrop-blur-3xl saturate-150 shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] pointer-events-none whitespace-nowrap will-change-[opacity,transform] [transform:translateZ(0)]`}
+              >
+                <h3 className="text-[10px] sm:text-sm font-bold text-foreground/90 drop-shadow-md tracking-wide">{role}</h3>
               </motion.div>
             ))}
           </div>
 
           {/* MOBILE ONLY: The Availability Badge placed directly under the image tags! */}
-          <div className="flex lg:hidden justify-center mt-10 mb-4 z-50 w-full relative">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            className="flex lg:hidden justify-center mt-10 mb-4 z-50 w-full relative will-change-[opacity]"
+          >
             <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-accent/10 border border-accent/20 backdrop-blur-sm shadow-lg shadow-accent/5">
               <span className="relative flex h-3.5 w-3.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
@@ -195,7 +213,7 @@ export default function Hero() {
               </span>
               <span className="text-sm font-semibold text-accent tracking-wide uppercase">Available for Freelance</span>
             </div>
-          </div>
+          </motion.div>
 
         </motion.div>
 
@@ -207,7 +225,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="hidden lg:flex justify-start mb-8"
+            className="hidden lg:flex justify-start mb-8 will-change-transform [transform:translateZ(0)]"
           >
             <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-accent/10 border border-accent/20 backdrop-blur-sm shadow-lg shadow-accent/5">
               <span className="relative flex h-3.5 w-3.5">
@@ -223,7 +241,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="hidden lg:flex flex-col"
+            className="hidden lg:flex flex-col will-change-transform [transform:translateZ(0)]"
           >
             <SplitText text="I AM" elementType="h2" className="text-5xl font-medium text-accent mb-4 uppercase tracking-wider" />
             <SplitText text={PORTFOLIO_DATA.name} elementType="h1" delay={0.2} className="text-6xl md:text-7xl lg:text-[4.5rem] xl:text-[5.5rem] font-bold tracking-tight" />
@@ -231,10 +249,10 @@ export default function Hero() {
 
           {/* Quick Metrics */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: isTouchDevice ? 0 : 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.0, duration: 0.8 }}
-            className="flex flex-wrap justify-center lg:justify-start gap-6 sm:gap-10 lg:mt-10 mb-2"
+            className="flex flex-wrap justify-center lg:justify-start gap-6 sm:gap-10 lg:mt-10 mb-2 will-change-[transform,opacity] [transform:translateZ(0)]"
           >
             <div className="flex flex-col items-center lg:items-start">
               <p className="text-3xl sm:text-4xl font-bold text-foreground">5<span className="text-accent">+</span></p>
@@ -254,10 +272,10 @@ export default function Hero() {
 
           {/* Buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: isTouchDevice ? 0 : 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.8 }}
-            className="flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-6 mt-12 z-20"
+            className="flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-6 mt-12 z-20 will-change-[transform,opacity] [transform:translateZ(0)]"
           >
             <a href="#projects" className="bg-accent text-white px-8 py-3.5 lg:py-4 rounded-full font-semibold hover:bg-accent/80 transition-colors shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] text-base lg:text-lg">
               View Work
