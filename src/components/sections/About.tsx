@@ -9,9 +9,9 @@ export default function About() {
       <div className="container mx-auto px-6 flex flex-col items-center">
         {/* Animated Header */}
         <SplitText text="About Me" className="text-3xl md:text-5xl font-bold mb-8 md:mb-10 text-center" />
-        
+
         {/* Seamless Framer Motion Paragraph Reveal (Zero GSAP conflict lag) */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
@@ -21,9 +21,7 @@ export default function About() {
           <p className="text-base sm:text-lg md:text-xl text-foreground/80 leading-relaxed mb-6">
             I am a detail-oriented IT professional based in Sri Lanka with over 5 years of experience spanning software development, web design, and comprehensive IT support. Dedicated to bridging the gap between hardware infrastructure and software architecture, I specialize in creating user-focused digital solutions and optimizing deep technical processes.
           </p>
-          <p className="text-base sm:text-lg md:text-xl text-foreground/80 leading-relaxed">
-            Adept at leveraging both technical expertise and interpersonal skills, my goal is to consistently deliver impactful, performance-optimized projects that drive business success—whether I'm configuring robust office networks or crafting seamless Next.js modern web interfaces.
-          </p>
+
         </motion.div>
       </div>
     </section>
