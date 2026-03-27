@@ -24,10 +24,17 @@ export default function Header() {
   const lenis = useLenis();
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 50);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -52,8 +59,8 @@ export default function Header() {
 
   return (
     <motion.header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        isScrolled ? "bg-background/80 backdrop-blur-md border-b border-foreground/10" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 will-change-[background-color,backdrop-filter] [transform:translateZ(0)] [backface-visibility:hidden] transition-all duration-300 ease-in-out border-b ${
+        isScrolled ? "bg-background/90 backdrop-blur-md border-white/5" : "bg-transparent border-transparent"
       }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}

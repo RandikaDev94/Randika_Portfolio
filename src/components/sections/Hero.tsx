@@ -81,10 +81,14 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="order-1 w-full text-center flex flex-col lg:hidden mb-4 will-change-[opacity]"
+          className="order-1 w-full text-center flex flex-col items-center lg:hidden mb-4 will-change-[opacity]"
         >
           <h2 className="text-xl sm:text-2xl font-medium text-accent mb-1 uppercase tracking-wider">I AM</h2>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">{PORTFOLIO_DATA.name}</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight flex flex-col items-center leading-[1.1]">
+            {PORTFOLIO_DATA.name.split(" ").map((word, i) => (
+              <span key={i} className="block">{word}</span>
+            ))}
+          </h1>
         </motion.div>
 
         {/* === RIGHT COLUMN / MOBILE MIDDLE: Image & Badges === */}
@@ -136,6 +140,7 @@ export default function Hero() {
                     <img
                       src="/profile.webp"
                       alt={PORTFOLIO_DATA.name}
+                      fetchPriority="high"
                       className="object-cover object-center w-full h-full pointer-events-none select-none transition-transform duration-700 ease-out hover:scale-105 will-change-transform [transform:translateZ(0)]"
                       onError={(e) => {
                         e.currentTarget.src = `https://ui-avatars.com/api/?name=Randika+Wijesooriya&size=800&background=0a0a0a&color=3b82f6&font-size=0.33`;
@@ -161,6 +166,7 @@ export default function Hero() {
                     <img
                       src="/profile.webp"
                       alt={PORTFOLIO_DATA.name}
+                      fetchPriority="high"
                       className="object-cover object-center w-full h-full pointer-events-none select-none will-change-transform [transform:translateZ(0)]"
                       onError={(e) => {
                         e.currentTarget.src = `https://ui-avatars.com/api/?name=Randika+Wijesooriya&size=800&background=0a0a0a&color=3b82f6&font-size=0.33`;
