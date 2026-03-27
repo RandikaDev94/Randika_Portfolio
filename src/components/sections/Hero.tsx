@@ -2,7 +2,7 @@
 
 import { motion, Variants, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { PORTFOLIO_DATA } from "@/constants/data";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SplitText } from "@/components/ui/SplitText";
 
 const roleVariants: Variants = {
@@ -19,6 +19,14 @@ const roleVariants: Variants = {
 };
 
 export default function Hero() {
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsTouchDevice(window.matchMedia("(hover: none)").matches);
+    }
+  }, []);
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -33,7 +41,7 @@ export default function Hero() {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     // Explicitly bypass physics tracking on touch devices to save massive mobile battery/CPU
-    if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) return;
+    if (isTouchDevice) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
     const width = rect.width;
@@ -126,7 +134,7 @@ export default function Hero() {
                   />
                   <div className="relative w-full h-full">
                     <img
-                      src="/profile.png"
+                      src="/profile.webp"
                       alt={PORTFOLIO_DATA.name}
                       className="object-cover object-center w-full h-full pointer-events-none select-none transition-transform duration-700 ease-out hover:scale-105"
                       onError={(e) => {
@@ -148,10 +156,10 @@ export default function Hero() {
                 />
 
                 {/* Flat Glass Card (No Glare, No 3D transform styles) */}
-                <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-background/60 bg-accent/10 backdrop-blur-md">
+                <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-background/60 bg-accent/10 backdrop-blur-sm">
                   <div className="relative w-full h-full">
                     <img
-                      src="/profile.png"
+                      src="/profile.webp"
                       alt={PORTFOLIO_DATA.name}
                       className="object-cover object-center w-full h-full pointer-events-none select-none"
                       onError={(e) => {
