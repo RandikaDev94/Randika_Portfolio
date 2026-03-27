@@ -93,12 +93,12 @@ export default function Hero() {
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               className="absolute inset-0"
             >
-              {/* 3D Image Card */}
+              {/* DESKTOP ONLY: 3D Interactive Card (Requires Heavy GPU Compositing) */}
               <motion.div
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
                 style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-                className="absolute inset-0 rounded-[2.5rem] overflow-visible z-10 touch-none peer"
+                className="hidden lg:block absolute inset-0 rounded-[2.5rem] overflow-visible z-10 touch-none peer"
               >
                 {/* Backglow */}
                 <motion.div
@@ -121,19 +121,43 @@ export default function Hero() {
                       x: glareX, y: glareY, left: "-50%", top: "-50%", width: "200%", height: "200%"
                     }}
                   />
-                  <motion.div className="relative w-full h-full">
+                  <div className="relative w-full h-full">
                     <img
                       src="/profile.png"
                       alt={PORTFOLIO_DATA.name}
                       className="object-cover object-center w-full h-full pointer-events-none select-none transition-transform duration-700 ease-out hover:scale-105"
                       onError={(e) => {
-                        const target = e.currentTarget;
-                        target.src = `https://ui-avatars.com/api/?name=Randika+Wijesooriya&size=800&background=0a0a0a&color=3b82f6&font-size=0.33`;
+                        e.currentTarget.src = `https://ui-avatars.com/api/?name=Randika+Wijesooriya&size=800&background=0a0a0a&color=3b82f6&font-size=0.33`;
                       }}
                     />
-                  </motion.div>
+                  </div>
                 </motion.div>
               </motion.div>
+
+              {/* MOBILE ONLY: 2D Flat Card (100% smooth scrolling, zero 3D physics lag) */}
+              <div className="block lg:hidden absolute inset-0 rounded-[2.5rem] overflow-visible z-10">
+                {/* Static Flat Backglow */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1.5, delay: 0.5 }}
+                  className="absolute -inset-4 rounded-[3rem] bg-accent/40 blur-[40px] -z-10"
+                />
+
+                {/* Flat Glass Card (No Glare, No 3D transform styles) */}
+                <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-background/60 bg-accent/10 backdrop-blur-md">
+                  <div className="relative w-full h-full">
+                    <img
+                      src="/profile.png"
+                      alt={PORTFOLIO_DATA.name}
+                      className="object-cover object-center w-full h-full pointer-events-none select-none"
+                      onError={(e) => {
+                        e.currentTarget.src = `https://ui-avatars.com/api/?name=Randika+Wijesooriya&size=800&background=0a0a0a&color=3b82f6&font-size=0.33`;
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             </motion.div>
 
             {/* Static Edge Badges - Now active across ALL device sizes! */}
