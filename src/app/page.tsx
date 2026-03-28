@@ -6,6 +6,7 @@ import About from "@/components/sections/About";
 import Skills from "@/components/sections/Skills";
 import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
+import Services from "@/components/sections/Services";
 import Contact from "@/components/sections/Contact";
 import PageTransition from "@/components/PageTransition";
 
@@ -18,6 +19,7 @@ export default function Home() {
         <Hero />
         <About />
         <Skills />
+        <Services />
         <Experience />
         <Projects />
         <Contact />
