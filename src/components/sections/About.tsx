@@ -108,8 +108,8 @@ export default function About() {
       id="about"
       className="py-20 md:py-28 relative border-t border-foreground/5 overflow-hidden"
     >
-      <div className="w-full px-6 lg:px-16 xl:px-24">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
+      <div className="w-full px-8 sm:px-12 lg:px-20 xl:px-28">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-24">
 
           {/* ── LEFT: Image with Orb Effect ─────────────────────────────────── */}
           <motion.div
