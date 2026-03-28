@@ -164,7 +164,7 @@ export default function Hero() {
                 <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-background/60 bg-accent/10 backdrop-blur-sm">
                   <div className="relative w-full h-full">
                     <img
-                      src="/profile.webp"
+                      src="/profile1.webp"
                       alt={PORTFOLIO_DATA.name}
                       fetchPriority="high"
                       className="object-cover object-center w-full h-full pointer-events-none select-none will-change-transform [transform:translateZ(0)]"
