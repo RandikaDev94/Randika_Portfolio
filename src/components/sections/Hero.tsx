@@ -138,7 +138,7 @@ export default function Hero() {
                   />
                   <div className="relative w-full h-full">
                     <img
-                      src="/profile.webp"
+                      src="/profile1.webp"
                       alt={PORTFOLIO_DATA.name}
                       fetchPriority="high"
                       className="object-cover object-center w-full h-full pointer-events-none select-none transition-transform duration-700 ease-out hover:scale-105 will-change-transform [transform:translateZ(0)]"
@@ -206,7 +206,7 @@ export default function Hero() {
           </div>
 
           {/* MOBILE ONLY: The Availability Badge placed directly under the image tags! */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1 }}

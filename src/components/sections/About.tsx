@@ -83,7 +83,7 @@ function OrbRings() {
 
       {/* Floating sparkle dots */}
       {[
-        { top: "10%", left: "-8%", delay: 0,   color: "rgba(59,130,246,0.9)" },
+        { top: "10%", left: "-8%", delay: 0, color: "rgba(59,130,246,0.9)" },
         { top: "80%", left: "108%", delay: 1.2, color: "rgba(139,92,246,0.9)" },
         { top: "50%", left: "-10%", delay: 2.4, color: "rgba(6,182,212,0.9)" },
         { top: "20%", left: "105%", delay: 0.8, color: "rgba(248,113,113,0.9)" },
@@ -108,8 +108,8 @@ export default function About() {
       id="about"
       className="py-20 md:py-28 relative border-t border-foreground/5 overflow-hidden"
     >
-      <div className="w-full px-8 sm:px-12 lg:px-20 xl:px-28">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-24">
+      <div className="container mx-auto px-6 lg:px-12 max-w-[1400px]">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-80">
 
           {/* ── LEFT: Image with Orb Effect ─────────────────────────────────── */}
           <motion.div
