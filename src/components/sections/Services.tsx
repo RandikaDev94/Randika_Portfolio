@@ -134,8 +134,20 @@ export default function Services() {
               </p>
             </div>
 
-            {/* Card stack area */}
-            <div className="relative" style={{ height: "min(340px, 52vh)" }}>
+            {/* Card stack area
+                PEEK = how many px of each buried card's top edge is visible above the front card.
+                The container gets paddingTop = (N-1)*PEEK so the topmost peeking strip is never clipped. */}
+            {(() => {
+              const PEEK = 28; // px each buried card shifts upward
+              const topPad = (N - 1) * PEEK;
+              return (
+                <div
+                  className="relative"
+                  style={{
+                    height: `calc(min(320px, 48vh) + ${topPad}px)`,
+                    paddingTop: topPad,
+                  }}
+                >
               {SERVICES.map((service, i) => {
                 const isVisible = i < visibleCount;
                 // depth: 0 = topmost visible card, increases for buried cards
@@ -149,10 +161,12 @@ export default function Services() {
                     animate={
                       isVisible
                         ? {
-                            // Slight downward offset per depth level for the "stack" illusion
-                            y: depth * 14,
-                            scale: 1 - depth * 0.035,
-                            opacity: 1 - depth * 0.18,
+                            // Buried cards shift UP so their top strip peeks above the front card.
+                            // depth=0 (front card) → y=0 (sits at bottom of padded area)
+                            // depth=1 → y=-PEEK, depth=2 → y=-PEEK*2, etc.
+                            y: -depth * 28,
+                            scale: 1 - depth * 0.04,
+                            opacity: 1 - depth * 0.15,
                           }
                         : { y: "100vh", opacity: 0 }
                     }
@@ -164,8 +178,12 @@ export default function Services() {
                     }}
                     style={{
                       position: "absolute",
-                      inset: 0,
-                      zIndex: i + 1,          // later cards render on top
+                      // Cards fill the area BELOW the paddingTop
+                      top: (N - 1) * 28, // align front card at the bottom of padded area
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      zIndex: i + 1,
                       willChange: "transform",
                       transform: "translateZ(0)",
                       backfaceVisibility: "hidden",
@@ -239,7 +257,9 @@ export default function Services() {
                   </motion.div>
                 );
               })}
-            </div>
+              </div>
+              );
+            })()}
 
             {/* Progress dots */}
             <div className="flex justify-center gap-2 mt-6">
