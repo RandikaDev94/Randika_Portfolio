@@ -108,22 +108,7 @@ export default function Services() {
   return (
     <section id="services" className="border-t border-foreground/5">
 
-      {/* ── Heading (normal flow, outside the sticky track) ─────────────────── */}
-      <div className="container mx-auto px-6 max-w-5xl pt-20 pb-12">
-        <SplitText
-          text="Technical Services"
-          className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight"
-        />
-        <motion.p
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-4 text-foreground/50 text-base md:text-lg max-w-xl"
-        >
-          Scroll to explore what I can build for you.
-        </motion.p>
-      </div>
+
 
       {/* ── Scroll Track ─────────────────────────────────────────────────────
           Height = N cards × 100vh gives each card exactly one viewport of scroll.
@@ -135,13 +120,22 @@ export default function Services() {
         style={{ height: `${N * 100}vh` }}
       >
         {/* Sticky viewport — stays on screen while we scroll through the track */}
-        <div
-          className="sticky top-0 h-screen flex items-center overflow-hidden"
-        >
+        <div className="sticky top-0 h-screen flex items-center overflow-hidden">
           <div className="container mx-auto px-6 max-w-5xl w-full">
 
+            {/* Heading — inside the pin so no gap above the cards */}
+            <div className="mb-8">
+              <SplitText
+                text="Technical Services"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight"
+              />
+              <p className="mt-3 text-foreground/50 text-base md:text-lg max-w-xl">
+                Scroll to explore what I can build for you.
+              </p>
+            </div>
+
             {/* Card stack area */}
-            <div className="relative" style={{ height: "min(420px, 70vh)" }}>
+            <div className="relative" style={{ height: "min(340px, 52vh)" }}>
               {SERVICES.map((service, i) => {
                 const isVisible = i < visibleCount;
                 // depth: 0 = topmost visible card, increases for buried cards
