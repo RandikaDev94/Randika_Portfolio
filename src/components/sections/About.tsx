@@ -108,8 +108,8 @@ export default function About() {
       id="about"
       className="py-20 md:py-28 relative border-t border-foreground/5 overflow-hidden"
     >
-      <div className="container mx-auto px-6 max-w-6xl">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-40">
+      <div className="w-full px-6 lg:px-16 xl:px-24">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
 
           {/* ── LEFT: Image with Orb Effect ─────────────────────────────────── */}
           <motion.div
@@ -117,10 +117,10 @@ export default function About() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="flex-shrink-0 flex items-center justify-center lg:w-[520px]"
+            className="flex-shrink-0 flex items-center justify-start"
           >
             {/* Orb container — perfectly circular */}
-            <div className="relative w-80 h-80 sm:w-96 sm:h-96" style={{ width: "clamp(280px, 40vw, 450px)", height: "clamp(280px, 40vw, 450px)" }}>
+            <div className="relative" style={{ width: "clamp(280px, 38vw, 480px)", height: "clamp(280px, 38vw, 480px)" }}>
               <OrbRings />
 
               {/* Profile image — circular */}
