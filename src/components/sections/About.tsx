@@ -109,7 +109,7 @@ export default function About() {
       className="py-20 md:py-28 relative border-t border-foreground/5 overflow-hidden"
     >
       <div className="container mx-auto px-6 max-w-6xl">
-        <div className="flex flex-col lg:flex-row items-center gap-20 lg:gap-28">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-40">
 
           {/* ── LEFT: Image with Orb Effect ─────────────────────────────────── */}
           <motion.div
@@ -185,31 +185,6 @@ export default function About() {
                 seamless{" "}
                 <span className="text-accent font-semibold">Next.js modern web interfaces</span>.
               </p>
-
-              {/* Stat chips */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-3 pt-4">
-                {[
-                  { label: "Years Experience", value: "5+" },
-                  { label: "Projects Delivered", value: "20+" },
-                  { label: "Client Satisfaction", value: "100%" },
-                ].map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="flex flex-col items-center lg:items-start px-5 py-3 rounded-xl"
-                    style={{
-                      background: "rgba(59,130,246,0.07)",
-                      border: "1px solid rgba(59,130,246,0.18)",
-                    }}
-                  >
-                    <span className="text-2xl font-black text-accent leading-none">
-                      {stat.value}
-                    </span>
-                    <span className="text-xs text-foreground/50 font-medium mt-1 uppercase tracking-wider">
-                      {stat.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
             </motion.div>
           </div>
 
