@@ -4,6 +4,7 @@ import { motion, Variants, useMotionValue, useSpring, useTransform } from "frame
 import { PORTFOLIO_DATA } from "@/constants/data";
 import React, { useEffect, useState } from "react";
 import { SplitText } from "@/components/ui/SplitText";
+import DarkVeil from "@/components/ui/DarkVeil";
 
 const roleVariants: Variants = {
   hidden: { opacity: 0, scale: 0.8 },
@@ -72,7 +73,23 @@ export default function Hero() {
 
   return (
     <section id="home" className="min-h-[100dvh] relative flex items-center justify-center overflow-hidden pt-14 lg:pt-0 pb-6 lg:pb-20">
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/5 z-0" />
+
+      {/* ── DarkVeil WebGL background ── */}
+      {/* Positioned as the very first z layer, fills the full section */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <DarkVeil
+          hueShift={200}         /* Shift palette toward blue-purple to match accent */
+          speed={0.35}           /* Slow drift — subtle, not distracting */
+          warpAmount={0.3}       /* Gentle organic warp */
+          noiseIntensity={0.02}  /* Very light film grain */
+          resolutionScale={0.6}  /* Render at 60% — massive perf saving on mobile */
+        />
+        {/* Dark overlay so text stays highly readable */}
+        <div className="absolute inset-0 bg-background/80" />
+      </div>
+
+      {/* Original gradient layer now at z-1, blends with DarkVeil */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background/60 via-transparent to-accent/5 z-[1]" />
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col lg:grid lg:grid-cols-2 lg:gap-8 items-center h-full">
 
