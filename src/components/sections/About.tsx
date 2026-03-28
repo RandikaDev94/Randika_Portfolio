@@ -109,7 +109,7 @@ export default function About() {
       className="py-20 md:py-28 relative border-t border-foreground/5 overflow-hidden"
     >
       <div className="container mx-auto px-6 max-w-6xl">
-        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
+        <div className="flex flex-col lg:flex-row items-center gap-20 lg:gap-28">
 
           {/* ── LEFT: Image with Orb Effect ─────────────────────────────────── */}
           <motion.div
@@ -117,20 +117,20 @@ export default function About() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="flex-shrink-0 flex items-center justify-center lg:w-[420px]"
+            className="flex-shrink-0 flex items-center justify-center lg:w-[520px]"
           >
-            {/* Orb container — relative so rings position against it */}
-            <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96">
+            {/* Orb container — perfectly circular */}
+            <div className="relative w-80 h-80 sm:w-96 sm:h-96" style={{ width: "clamp(280px, 40vw, 450px)", height: "clamp(280px, 40vw, 450px)" }}>
               <OrbRings />
 
-              {/* Profile image card */}
+              {/* Profile image — circular */}
               <div
-                className="absolute inset-0 rounded-2xl overflow-hidden"
+                className="absolute inset-0 rounded-full overflow-hidden"
                 style={{
                   background: "rgba(14,14,14,0.9)",
-                  border: "1px solid rgba(59,130,246,0.25)",
+                  border: "2px solid rgba(59,130,246,0.3)",
                   boxShadow:
-                    "0 0 0 1px rgba(255,255,255,0.05) inset, 0 32px 80px -20px rgba(0,0,0,0.8)",
+                    "0 0 0 1px rgba(255,255,255,0.06) inset, 0 32px 80px -20px rgba(0,0,0,0.8)",
                 }}
               >
                 <img
@@ -144,19 +144,19 @@ export default function About() {
                       "https://ui-avatars.com/api/?name=Randika+Wijesooriya&size=600&background=0a0a0a&color=3b82f6&font-size=0.33";
                   }}
                 />
-                {/* Subtle inner gradient overlay for premium feel */}
+                {/* Bottom gradient to soften the circle edge */}
                 <div
-                  className="absolute inset-0 pointer-events-none"
+                  className="absolute inset-0 rounded-full pointer-events-none"
                   style={{
                     background:
-                      "linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.5) 100%)",
+                      "radial-gradient(ellipse at bottom, rgba(0,0,0,0.45) 0%, transparent 60%)",
                   }}
                 />
               </div>
             </div>
           </motion.div>
 
-          {/* ── RIGHT: Text Content ──────────────────────────────────────────── */}
+          {/* ── RIGHT: Text Content ─────────────────────────────────────────── */}
           <div className="flex-1 min-w-0 text-center lg:text-left">
             <SplitText
               text="About Me"
