@@ -69,7 +69,6 @@ export default function CustomCursor() {
         animate={{
           width: isHovering ? 64 : 32,
           height: isHovering ? 64 : 32,
-          backgroundColor: isHovering ? "white" : "white",
         }}
         transition={{ duration: 0.2 }}
         className="rounded-full bg-white opacity-100 flex items-center justify-center"

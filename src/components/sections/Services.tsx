@@ -144,7 +144,7 @@ export default function Services() {
                 <div
                   className="relative"
                   style={{
-                    height: `calc(min(320px, 48vh) + ${topPad}px)`,
+                    height: `calc(min(420px, 55vh) + ${topPad}px)`,
                     paddingTop: topPad,
                   }}
                 >

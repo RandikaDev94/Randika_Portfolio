@@ -7,62 +7,38 @@ import { SplitText } from "@/components/ui/SplitText";
 
 const getIcon = (iconName: string) => {
   const devicons: Record<string, string> = {
-    html5: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg",
-    css3: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg",
-    javascript: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",
-    react: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
-    nextjs: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg",
-    tailwindcss: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
-    wordpress: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-plain.svg",
-    flutter: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg",
+    html5: "/icons/html5.svg",
+    css3: "/icons/css3.svg",
+    javascript: "/icons/javascript.svg",
+    react: "/icons/react.svg",
+    nextjs: "/icons/nextjs.svg",
+    tailwindcss: "/icons/tailwindcss.svg",
+    wordpress: "/icons/wordpress.svg",
+    flutter: "/icons/flutter.svg",
   };
 
   if (devicons[iconName]) {
     return <img src={devicons[iconName]} alt={iconName} className={`w-8 h-8 ${iconName === 'nextjs' || iconName === 'wordpress' ? 'invert opacity-90' : ''}`} />;
   }
 
-  // Fallback inline SVGs for Non-devicon IT skills
-  switch (iconName) {
-    case "support":
-      return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-          <path d="m9 12 2 2 4-4" />
-        </svg>
-      );
-    case "hardware":
-      return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
-          <rect width="18" height="12" x="3" y="4" rx="2" />
-          <path d="M2 20h20" />
-          <path d="M12 16v4" />
-        </svg>
-      );
-    case "network":
-      return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-purple-400">
-          <rect x="16" y="16" width="6" height="6" rx="1" />
-          <rect x="2" y="16" width="6" height="6" rx="1" />
-          <rect x="9" y="2" width="6" height="6" rx="1" />
-          <path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3" />
-          <path d="M12 12V8" />
-        </svg>
-      );
-    case "printer":
-      return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400">
-          <polyline points="6 9 6 2 18 2 18 9" />
-          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-          <rect width="12" height="8" x="6" y="14" />
-        </svg>
-      );
-    default:
-      return (
-        <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center text-accent font-bold">
-          {iconName.charAt(0).toUpperCase()}
-        </div>
-      );
+  // Local SVG files for Non-devicon IT skills
+  const customIcons: Record<string, string> = {
+    support: "/icons/support.svg",
+    hardware: "/icons/hardware.svg",
+    network: "/icons/network.svg",
+    printer: "/icons/printer.svg",
+  };
+
+  if (customIcons[iconName]) {
+    return <img src={customIcons[iconName]} alt={iconName} className="w-8 h-8" />;
   }
+
+  // Fallback
+  return (
+    <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center text-accent font-bold">
+      {iconName.charAt(0).toUpperCase()}
+    </div>
+  );
 };
 
 export default function Skills() {

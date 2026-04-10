@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
-import { GithubIcon, LinkedinIcon, FacebookIcon, InstagramIcon } from "@/components/Icons";
 import { PORTFOLIO_DATA } from "@/constants/data";
 import Link from "next/link";
 import { useLenis } from "lenis/react";
@@ -89,17 +87,17 @@ export default function Header() {
 
         {/* Desktop Social & Contact */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link href={PORTFOLIO_DATA.socialLinks.linkedin} target="_blank" className="text-foreground/80 hover:text-accent transition-colors">
-            <LinkedinIcon size={20} />
+          <Link href={PORTFOLIO_DATA.socialLinks.linkedin} target="_blank" className="group p-1" aria-label="LinkedIn">
+            <div className="w-5 h-5 bg-foreground/80 group-hover:bg-accent transition-colors" style={{ WebkitMaskImage: "url('/icons/social/linkedin.svg')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
           </Link>
-          <Link href={PORTFOLIO_DATA.socialLinks.github} target="_blank" className="text-foreground/80 hover:text-accent transition-colors">
-            <GithubIcon size={20} />
+          <Link href={PORTFOLIO_DATA.socialLinks.github} target="_blank" className="group p-1" aria-label="GitHub">
+            <div className="w-5 h-5 bg-foreground/80 group-hover:bg-accent transition-colors" style={{ WebkitMaskImage: "url('/icons/social/github.svg')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
           </Link>
-          <Link href={PORTFOLIO_DATA.socialLinks.facebook} target="_blank" className="text-foreground/80 hover:text-accent transition-colors">
-            <FacebookIcon size={20} />
+          <Link href={PORTFOLIO_DATA.socialLinks.facebook} target="_blank" className="group p-1" aria-label="Facebook">
+            <div className="w-5 h-5 bg-foreground/80 group-hover:bg-accent transition-colors" style={{ WebkitMaskImage: "url('/icons/social/facebook.svg')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
           </Link>
-          <Link href={PORTFOLIO_DATA.socialLinks.instagram} target="_blank" className="text-foreground/80 hover:text-accent transition-colors">
-            <InstagramIcon size={20} />
+          <Link href={PORTFOLIO_DATA.socialLinks.instagram} target="_blank" className="group p-1" aria-label="Instagram">
+            <div className="w-5 h-5 bg-foreground/80 group-hover:bg-accent transition-colors" style={{ WebkitMaskImage: "url('/icons/social/instagram.svg')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
           </Link>
         </div>
 
@@ -109,7 +107,11 @@ export default function Header() {
           onClick={toggleMenu}
           aria-label="Toggle Navigation Menu"
         >
-          {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          {mobileMenuOpen ? (
+            <div className="w-7 h-7 bg-foreground group-hover:bg-accent transition-colors" style={{ WebkitMaskImage: "url('/icons/nav/close.svg')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
+          ) : (
+            <div className="w-7 h-7 bg-foreground group-hover:bg-accent transition-colors" style={{ WebkitMaskImage: "url('/icons/nav/menu.svg')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
+          )}
         </button>
       </div>
 
@@ -135,17 +137,17 @@ export default function Header() {
                 </a>
               ))}
               <div className="flex items-center space-x-6 pt-4 border-t border-foreground/10 w-full justify-center">
-                <Link href={PORTFOLIO_DATA.socialLinks.linkedin} target="_blank" className="text-foreground/80 hover:text-accent transition-colors">
-                  <LinkedinIcon size={24} />
+                <Link href={PORTFOLIO_DATA.socialLinks.linkedin} target="_blank" className="group p-2" aria-label="LinkedIn">
+                  <div className="w-6 h-6 bg-foreground/80 group-hover:bg-accent transition-colors" style={{ WebkitMaskImage: "url('/icons/social/linkedin.svg')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
                 </Link>
-                <Link href={PORTFOLIO_DATA.socialLinks.github} target="_blank" className="text-foreground/80 hover:text-accent transition-colors">
-                  <GithubIcon size={24} />
+                <Link href={PORTFOLIO_DATA.socialLinks.github} target="_blank" className="group p-2" aria-label="GitHub">
+                  <div className="w-6 h-6 bg-foreground/80 group-hover:bg-accent transition-colors" style={{ WebkitMaskImage: "url('/icons/social/github.svg')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
                 </Link>
-                <Link href={PORTFOLIO_DATA.socialLinks.facebook} target="_blank" className="text-foreground/80 hover:text-accent transition-colors">
-                  <FacebookIcon size={24} />
+                <Link href={PORTFOLIO_DATA.socialLinks.facebook} target="_blank" className="group p-2" aria-label="Facebook">
+                  <div className="w-6 h-6 bg-foreground/80 group-hover:bg-accent transition-colors" style={{ WebkitMaskImage: "url('/icons/social/facebook.svg')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
                 </Link>
-                <Link href={PORTFOLIO_DATA.socialLinks.instagram} target="_blank" className="text-foreground/80 hover:text-accent transition-colors">
-                  <InstagramIcon size={24} />
+                <Link href={PORTFOLIO_DATA.socialLinks.instagram} target="_blank" className="group p-2" aria-label="Instagram">
+                  <div className="w-6 h-6 bg-foreground/80 group-hover:bg-accent transition-colors" style={{ WebkitMaskImage: "url('/icons/social/instagram.svg')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
                 </Link>
               </div>
             </div>

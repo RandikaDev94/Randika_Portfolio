@@ -72,7 +72,6 @@ export default function Hero() {
 
   return (
     <section id="home" className="min-h-[100dvh] relative flex items-center justify-center overflow-hidden pt-14 lg:pt-0 pb-6 lg:pb-20">
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/5 z-0" />
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col lg:grid lg:grid-cols-2 lg:gap-8 items-center h-full">
 
@@ -96,7 +95,7 @@ export default function Hero() {
           initial={{ opacity: 0, scale: isTouchDevice ? 1 : 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-          className="order-2 lg:order-2 lg:col-start-2 lg:row-start-1 relative flex flex-col justify-center items-center lg:justify-end w-full"
+          className="order-2 lg:order-2 lg:col-start-2 lg:row-start-1 relative flex flex-col justify-center items-center lg:justify-end w-full mt-16 lg:mt-24"
           style={isTouchDevice ? {} : { perspective: 1200 }}
         >
           {/* Layout Wrapper for Image & Border Badges */}
