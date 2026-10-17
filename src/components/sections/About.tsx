@@ -171,7 +171,7 @@ export default function About() {
               className="space-y-5"
             >
               <p className="text-base sm:text-lg text-foreground/75 leading-relaxed">
-                I am a detail-oriented IT professional based in Sri Lanka with over{" "}
+                I am a detail oriented IT professional based in Sri Lanka with over{" "}
                 <span className="text-accent font-semibold">5 years of experience</span> spanning
                 software development, web design, and comprehensive IT support. Dedicated to
                 bridging the gap between hardware infrastructure and software architecture, I
@@ -181,7 +181,7 @@ export default function About() {
               <p className="text-base sm:text-lg text-foreground/75 leading-relaxed">
                 Adept at leveraging both technical expertise and interpersonal skills, my goal is
                 to consistently deliver impactful, performance-optimized projects that drive
-                business success — whether I'm configuring robust office networks or crafting
+                business success whether I'm configuring robust office networks or crafting
                 seamless{" "}
                 <span className="text-accent font-semibold">Next.js modern web interfaces</span>.
               </p>
