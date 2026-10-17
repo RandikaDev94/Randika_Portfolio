@@ -1,0 +1,23 @@
+# Apache configuration for Hostinger Next.js Static Export
+DirectoryIndex index.html index.htm
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # If request is an existing directory or file, serve it directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Rewrite /page to /page/index.html if directory index exists
+  RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+  RewriteRule ^(.*)/?$ $1/index.html [L]
+
+  # Rewrite /page to /page.html if static html exists
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^([^/]+)/?$ $1.html [L]
+
+  # Custom 404 page
+  ErrorDocument 404 /404.html
+</IfModule>
