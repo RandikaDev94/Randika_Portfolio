@@ -29,6 +29,51 @@ export const PORTFOLIO_DATA = {
       year: "2013 – 2014",
     },
   ],
+  certificates: [
+    {
+      title: "BSc. in Information Technology",
+      issuer: "Sri Lanka Institute of Information Technology (SLIIT)",
+      year: "2015 – 2018",
+      category: "Educational Qualification",
+      file: "/certificates/sliit-degree.pdf",
+    },
+    {
+      title: "Diploma in MS Office, Desktop Publishing & Computer Hardware",
+      issuer: "Central Provincial Council (Local Government)",
+      year: "2013 – 2014",
+      category: "Educational Qualification",
+      file: "/certificates/hardware-diploma.pdf",
+    },
+    {
+      title: "Certificate Course in Information Technology",
+      issuer: "Future World IPS (Graphic Designing & MS Office)",
+      year: "2015",
+      category: "Other Qualification",
+      file: "/certificates/future-world-it.pdf",
+    },
+    {
+      title: "Extension Course in English",
+      issuer: "Department of English, University of Peradeniya",
+      year: "2014",
+      category: "Other Qualification",
+      file: "/certificates/peradeniya-english.pdf",
+    },
+    {
+      title: "Service Letter & Experience Certificate",
+      issuer: "Metal Factor (Pvt) Ltd",
+      year: "2018 – 2024",
+      category: "Service Letter",
+      file: "/certificates/metal-factor-service-letter.pdf",
+    },
+    {
+      title: "Service Letter & Experience Certificate",
+      issuer: "Transtek Lanka (Pvt) Ltd",
+      year: "2025 – Present",
+      category: "Service Letter",
+      file: "/certificates/transtek-service-letter.pdf",
+    },
+  ],
+  certificateBundle: "/certificates/Randika_Wijesooriya_Certificates.zip",
   experience: [
     {
       role: "IT Technician & Web Developer",
