@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PORTFOLIO_DATA } from "@/constants/data";
 import { SplitText } from "@/components/ui/SplitText";
 import { CheckCircle2, Award, Download, ExternalLink, FolderDown, GraduationCap, Briefcase } from "lucide-react";
+import { usePortfolioData } from "@/context/PortfolioDataContext";
 
 interface TimelineItemProps {
   date: string;
@@ -48,20 +49,21 @@ const TimelineItem = ({ date, title, subtitle, descriptions, isLeft }: TimelineI
 };
 
 export default function Experience() {
+  const { certificates, experience, education } = usePortfolioData();
   const sectionRef = useRef<HTMLElement>(null);
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
   const categoryOptions = [
-    { id: "All", label: "All Credentials", count: PORTFOLIO_DATA.certificates?.length || 0 },
-    { id: "Educational Qualification", label: "Education", count: PORTFOLIO_DATA.certificates?.filter(c => c.category === "Educational Qualification").length || 0 },
-    { id: "Other Qualification", label: "Other Qualifications", count: PORTFOLIO_DATA.certificates?.filter(c => c.category === "Other Qualification").length || 0 },
-    { id: "Service Letter", label: "Service Letters", count: PORTFOLIO_DATA.certificates?.filter(c => c.category === "Service Letter").length || 0 },
+    { id: "All", label: "All Credentials", count: certificates?.length || 0 },
+    { id: "Educational Qualification", label: "Education", count: certificates?.filter(c => c.category === "Educational Qualification").length || 0 },
+    { id: "Other Qualification", label: "Other Qualifications", count: certificates?.filter(c => c.category === "Other Qualification").length || 0 },
+    { id: "Service Letter", label: "Service Letters", count: certificates?.filter(c => c.category === "Service Letter").length || 0 },
   ];
 
-  const filteredCertificates = PORTFOLIO_DATA.certificates
+  const filteredCertificates = certificates
     ? activeCategory === "All"
-      ? PORTFOLIO_DATA.certificates
-      : PORTFOLIO_DATA.certificates.filter((c) => c.category === activeCategory)
+      ? certificates
+      : certificates.filter((c) => c.category === activeCategory)
     : [];
 
   const getCategoryIcon = (category: string) => {
@@ -123,9 +125,9 @@ export default function Experience() {
           </div>
 
           {/* Professional Experience Items */}
-          {PORTFOLIO_DATA.experience.map((exp, index) => (
+          {experience.map((exp, index) => (
             <TimelineItem
-              key={`exp-${index}`}
+              key={`exp-${exp.id || index}`}
               isLeft={index % 2 === 0}
               date={exp.period}
               title={exp.role}
@@ -142,11 +144,11 @@ export default function Experience() {
           </div>
 
           {/* Education Items */}
-          {PORTFOLIO_DATA.education.map((edu, index) => (
+          {education.map((edu, index) => (
             <TimelineItem
-              key={`edu-${index}`}
+              key={`edu-${edu.id || index}`}
               // Continuing the sequence from the last index to keep the alternation smooth
-              isLeft={(PORTFOLIO_DATA.experience.length + index) % 2 === 0}
+              isLeft={(experience.length + index) % 2 === 0}
               date={`Graduated ${edu.year}`}
               title={edu.degree}
               subtitle={edu.institution}
@@ -158,7 +160,7 @@ export default function Experience() {
         </div>
 
         {/* Certificates & Credentials Section */}
-        {PORTFOLIO_DATA.certificates && PORTFOLIO_DATA.certificates.length > 0 && (
+        {certificates && certificates.length > 0 && (
           <div className="mt-20 md:mt-28 w-full pt-16 border-t border-foreground/10">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold uppercase tracking-widest mb-4">

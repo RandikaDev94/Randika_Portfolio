@@ -5,6 +5,8 @@ import { LenisProvider } from "@/components/LenisProvider";
 import { GlobalGlow } from "@/components/ui/GlobalGlow";
 import Preloader from "@/components/ui/Preloader";
 
+import { PortfolioDataProvider } from "@/context/PortfolioDataContext";
+
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
@@ -22,7 +24,9 @@ export default function RootLayout({
       <body className="bg-background text-foreground min-h-screen flex flex-col font-sans selection:bg-accent selection:text-white" suppressHydrationWarning>
         <Preloader />
         <GlobalGlow />
-        <LenisProvider>{children}</LenisProvider>
+        <LenisProvider>
+          <PortfolioDataProvider>{children}</PortfolioDataProvider>
+        </LenisProvider>
       </body>
     </html>
   );

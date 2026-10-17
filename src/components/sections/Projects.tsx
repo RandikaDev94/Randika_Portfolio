@@ -1,19 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PORTFOLIO_DATA } from "@/constants/data";
 import { ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { SplitText } from "@/components/ui/SplitText";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePortfolioData } from "@/context/PortfolioDataContext";
 
 export default function Projects() {
+  const { projects } = usePortfolioData();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
-  const totalProjects = PORTFOLIO_DATA.projects.length;
+  const totalProjects = projects?.length || 0;
 
   useEffect(() => {
-    if (isHovered) return;
+    if (isHovered || totalProjects === 0) return;
     
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % totalProjects);
@@ -22,15 +23,26 @@ export default function Projects() {
     return () => clearInterval(timer);
   }, [isHovered, totalProjects]);
 
+  // Reset index if projects count changes
+  useEffect(() => {
+    if (currentIndex >= totalProjects && totalProjects > 0) {
+      setCurrentIndex(0);
+    }
+  }, [totalProjects, currentIndex]);
+
   const handleNext = () => {
+    if (totalProjects === 0) return;
     setCurrentIndex((prev) => (prev + 1) % totalProjects);
   };
 
   const handlePrev = () => {
+    if (totalProjects === 0) return;
     setCurrentIndex((prev) => (prev - 1 + totalProjects) % totalProjects);
   };
 
-  const project = PORTFOLIO_DATA.projects[currentIndex];
+  const project = projects?.[currentIndex];
+
+  if (!project) return null;
 
   return (
     <section id="projects" className="py-24 border-t border-foreground/5 relative overflow-hidden">
@@ -56,7 +68,13 @@ export default function Projects() {
                 className="bg-foreground/5 border border-foreground/10 rounded-[2rem] p-8 md:p-12 w-full backdrop-blur-sm relative group shadow-xl"
               >
                 <div className="absolute top-6 right-6 lg:top-8 lg:right-8 opacity-60 group-hover:opacity-100 transition-opacity">
-                  <a href="#" className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-white shadow-lg hover:scale-105 hover:bg-accent/90 transition-all pointer-events-auto">
+                  <a
+                    href={project.liveUrl || project.githubUrl || "#"}
+                    target={project.liveUrl || project.githubUrl ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-white shadow-lg hover:scale-105 hover:bg-accent/90 transition-all pointer-events-auto"
+                    aria-label={`View ${project.title}`}
+                  >
                     <ExternalLink size={20} />
                   </a>
                 </div>
@@ -85,7 +103,7 @@ export default function Projects() {
           {/* Navigation Controls */}
           <div className="flex items-center justify-between mt-8 md:mt-12 px-2">
             <div className="flex gap-2.5">
-              {PORTFOLIO_DATA.projects.map((_, i) => (
+              {projects.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentIndex(i)}
