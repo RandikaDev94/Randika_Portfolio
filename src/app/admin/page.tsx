@@ -206,7 +206,7 @@ export default function AdminPage() {
 
       // If user selected a file to upload:
       if (certInputMode === "file" && certFile) {
-        setCertUploadProgress(5);
+        setCertUploadProgress(0);
         finalFilePath = await uploadCertificateFile(certFile, (p) => {
           setCertUploadProgress(p);
         });
@@ -228,14 +228,9 @@ export default function AdminPage() {
       }
       setCertModalOpen(false);
     } catch (err: unknown) {
+      // storageService already builds descriptive messages – show them verbatim
       const msg = err instanceof Error ? err.message : String(err);
-      if (msg.includes("storage/") || msg.includes("Firebase Storage")) {
-        setCertUploadError(
-          "Cloud Storage upload issue: " + msg + ". Make sure Cloud Storage is enabled in Firebase Console (Build > Storage)."
-        );
-      } else {
-        setCertUploadError("Error saving certificate: " + msg);
-      }
+      setCertUploadError(msg);
     } finally {
       setIsSubmittingCert(false);
       setCertUploadProgress(null);
@@ -1239,7 +1234,7 @@ export default function AdminPage() {
               {certUploadError && (
                 <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs flex items-start gap-2.5">
                   <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                  <span className="leading-relaxed">{certUploadError}</span>
+                  <span className="leading-relaxed whitespace-pre-wrap break-words">{certUploadError}</span>
                 </div>
               )}
 
