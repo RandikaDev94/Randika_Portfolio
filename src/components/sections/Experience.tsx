@@ -16,6 +16,7 @@ import {
   Eye,
   X,
   Loader2,
+  FileText,
 } from "lucide-react";
 import { usePortfolioData } from "@/context/PortfolioDataContext";
 import { CertificateItem } from "@/types/portfolio";
@@ -67,6 +68,7 @@ export default function Experience() {
   const [viewingCert, setViewingCert] = useState<CertificateItem | null>(null);
   const [downloadingUrl, setDownloadingUrl] = useState<string | null>(null);
   const [mediaLoading, setMediaLoading] = useState<boolean>(true);
+  const [pdfViewMode, setPdfViewMode] = useState<"image" | "pdf">("image");
 
   // Prevent background scrolling while modal is open
   useEffect(() => {
@@ -92,6 +94,7 @@ export default function Experience() {
 
   const handleOpenViewer = (cert: CertificateItem) => {
     setMediaLoading(true);
+    setPdfViewMode("image");
     setViewingCert(cert);
   };
 
@@ -107,22 +110,43 @@ export default function Experience() {
 
     try {
       // 1. Fetch file as Blob (Cloudinary provides Access-Control-Allow-Origin: *)
-      const response = await fetch(fileUrl);
+      let response = await fetch(fileUrl);
+      let downloadedAsJpgFallback = false;
+
+      // If Cloudinary returned 401 Unauthorized on .pdf (due to Cloudinary's default security restriction on PDF delivery)
+      if (
+        !response.ok &&
+        response.status === 401 &&
+        fileUrl.includes("res.cloudinary.com") &&
+        fileUrl.toLowerCase().includes(".pdf")
+      ) {
+        console.warn("Cloudinary PDF delivery restricted (401). Falling back to rendered image download.");
+        const fallbackUrl = fileUrl.replace(/\.pdf$/i, ".jpg");
+        response = await fetch(fallbackUrl);
+        if (response.ok) {
+          downloadedAsJpgFallback = true;
+        }
+      }
+
       if (!response.ok) throw new Error(`HTTP status ${response.status}`);
       const blob = await response.blob();
 
       // Extract or infer file extension
       let ext = "";
-      const cleanUrl = fileUrl.split("?")[0];
-      const match = cleanUrl.match(/\.([a-zA-Z0-9]+)$/);
-      if (match) {
-        ext = `.${match[1]}`;
-      } else if (blob.type === "application/pdf") {
-        ext = ".pdf";
-      } else if (blob.type.includes("png")) {
-        ext = ".png";
-      } else if (blob.type.includes("jpeg") || blob.type.includes("jpg")) {
+      if (downloadedAsJpgFallback) {
         ext = ".jpg";
+      } else {
+        const cleanUrl = fileUrl.split("?")[0];
+        const match = cleanUrl.match(/\.([a-zA-Z0-9]+)$/);
+        if (match) {
+          ext = `.${match[1]}`;
+        } else if (blob.type === "application/pdf") {
+          ext = ".pdf";
+        } else if (blob.type.includes("png")) {
+          ext = ".png";
+        } else if (blob.type.includes("jpeg") || blob.type.includes("jpg")) {
+          ext = ".jpg";
+        }
       }
 
       // Format safe filename
@@ -154,7 +178,13 @@ export default function Experience() {
       );
 
       if (fileUrl.includes("res.cloudinary.com") && fileUrl.includes("/upload/")) {
-        targetUrl = fileUrl.replace("/upload/", `/upload/fl_attachment:${safeName}/`);
+        if (fileUrl.toLowerCase().includes(".pdf")) {
+          targetUrl = fileUrl
+            .replace("/upload/", `/upload/fl_attachment:${safeName}/`)
+            .replace(/\.pdf$/i, ".jpg");
+        } else {
+          targetUrl = fileUrl.replace("/upload/", `/upload/fl_attachment:${safeName}/`);
+        }
       }
 
       // Invisible iframe triggers download in background without opening any tab
@@ -458,6 +488,23 @@ export default function Experience() {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-2 shrink-0">
+                {isPdfFile(viewingCert.file) && viewingCert.file.includes("res.cloudinary.com") && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMediaLoading(true);
+                      setPdfViewMode((prev) => (prev === "image" ? "pdf" : "image"));
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-foreground/80 hover:text-foreground border border-white/10 transition-colors cursor-pointer"
+                    title={pdfViewMode === "image" ? "Switch to interactive PDF document view" : "Switch to image view"}
+                  >
+                    <FileText className="w-3.5 h-3.5 text-accent" />
+                    <span className="hidden sm:inline">
+                      {pdfViewMode === "image" ? "PDF Document" : "Image View"}
+                    </span>
+                  </button>
+                )}
+
                 <button
                   type="button"
                   disabled={downloadingUrl === viewingCert.file}
@@ -505,17 +552,26 @@ export default function Experience() {
                 </div>
               )}
 
-              {isPdfFile(viewingCert.file) ? (
-                <iframe
-                  src={viewingCert.file}
-                  className="w-full h-[65vh] md:h-[75vh] border-0 bg-white"
-                  title={viewingCert.title}
-                  onLoad={() => setMediaLoading(false)}
-                />
+              {isPdfFile(viewingCert.file) && pdfViewMode === "pdf" ? (
+                <div className="w-full h-full flex flex-col">
+                  <iframe
+                    src={viewingCert.file}
+                    className="w-full h-[65vh] md:h-[75vh] border-0 bg-white"
+                    title={viewingCert.title}
+                    onLoad={() => setMediaLoading(false)}
+                  />
+                  <div className="p-2.5 bg-black/60 border-t border-white/5 text-[11px] text-foreground/50 text-center">
+                    Note: If document fails to load, ensure <span className="text-accent font-semibold">&quot;Allow delivery of PDF and ZIP files&quot;</span> is checked in Cloudinary Settings → Security.
+                  </div>
+                </div>
               ) : (
                 <div className="p-4 sm:p-6 flex items-center justify-center w-full h-full">
                   <img
-                    src={viewingCert.file}
+                    src={
+                      isPdfFile(viewingCert.file) && viewingCert.file.includes("res.cloudinary.com")
+                        ? viewingCert.file.replace(/\.pdf$/i, ".jpg")
+                        : viewingCert.file
+                    }
                     alt={viewingCert.title}
                     onLoad={() => setMediaLoading(false)}
                     onError={() => setMediaLoading(false)}

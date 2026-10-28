@@ -694,7 +694,7 @@ export default function AdminPage() {
 
                     <div className="flex items-center justify-between pt-3 border-t border-foreground/5">
                       <a
-                        href={cert.file}
+                        href={cert.file.includes("res.cloudinary.com") && cert.file.toLowerCase().includes(".pdf") ? cert.file.replace(/\.pdf$/i, ".jpg") : cert.file}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-xs font-semibold text-accent hover:underline inline-flex items-center gap-1"
@@ -1183,12 +1183,17 @@ export default function AdminPage() {
                       )}
                     </div>
 
+                    {/* Cloudinary PDF delivery security reminder */}
+                    <div className="mt-2.5 p-2.5 rounded-xl bg-accent/5 border border-accent/15 text-[11px] text-foreground/70 leading-relaxed">
+                      <span className="font-semibold text-accent">PDF Delivery Note:</span> By default on new Cloudinary accounts, raw PDF delivery is restricted. If your uploaded PDF ever shows an error when viewing, log into Cloudinary and enable <strong className="text-foreground">&quot;Allow delivery of PDF and ZIP files&quot;</strong> under <em>Settings → Security</em>.
+                    </div>
+
                     {/* Current existing file indicator if editing */}
                     {editingCert && !certFile && editingCert.file && (
                       <div className="mt-2 text-[11px] text-foreground/50 flex items-center justify-between bg-black/20 px-3 py-1.5 rounded-lg">
                         <span className="truncate max-w-[260px]">Current: {editingCert.file}</span>
                         <a
-                          href={editingCert.file}
+                          href={editingCert.file.includes("res.cloudinary.com") && editingCert.file.toLowerCase().includes(".pdf") ? editingCert.file.replace(/\.pdf$/i, ".jpg") : editingCert.file}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-accent hover:underline flex items-center gap-1 shrink-0 ml-2"
