@@ -66,14 +66,14 @@ export default function Header() {
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <div className="container mx-auto px-6 h-14 md:h-20 flex items-center justify-between">
+      <div className="container mx-auto px-6 h-14 md:h-20 flex items-center justify-between relative">
         {/* Logo */}
-        <a href="#home" onClick={(e) => handleScrollTo(e, "#home")} className="text-2xl font-bold tracking-tighter cursor-pointer">
+        <a href="#home" onClick={(e) => handleScrollTo(e, "#home")} className="text-2xl font-bold tracking-tighter cursor-pointer z-10 shrink-0">
           RW<span className="text-accent">.</span>
         </a>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center space-x-8">
+        {/* Desktop Nav - Centered in Window */}
+        <nav className="hidden md:flex items-center space-x-6 lg:space-x-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
           {navLinks.map((link) => (
             <a
               key={link.name}
@@ -87,8 +87,8 @@ export default function Header() {
         </nav>
 
         {/* Desktop Social & Hot Button */}
-        <div className="hidden md:flex items-center space-x-5">
-          <div className="flex items-center space-x-3.5 pr-4 border-r border-foreground/10">
+        <div className="hidden md:flex items-center space-x-4 lg:space-x-5 z-10 shrink-0">
+          <div className="hidden lg:flex items-center space-x-3.5 pr-4 border-r border-foreground/10">
             <Link href={PORTFOLIO_DATA.socialLinks.linkedin} target="_blank" className="group p-1" aria-label="LinkedIn">
               <div className="w-4 h-4 bg-foreground/80 group-hover:bg-accent transition-colors" style={{ WebkitMaskImage: "url('/icons/social/linkedin.svg')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
             </Link>
@@ -107,7 +107,7 @@ export default function Header() {
           <a
             href="#certificates"
             onClick={(e) => handleScrollTo(e, "#certificates")}
-            className="relative group inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-wide transition-all duration-300 bg-gradient-to-r from-accent/15 via-accent/25 to-accent/15 hover:from-accent hover:to-accent text-accent hover:text-white border border-accent/40 hover:border-accent shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] hover:scale-105 active:scale-95 cursor-pointer shrink-0"
+            className="relative group inline-flex items-center gap-2 px-3.5 py-1.5 lg:px-4 lg:py-2 rounded-full text-xs font-bold tracking-wide transition-all duration-300 bg-gradient-to-r from-accent/15 via-accent/25 to-accent/15 hover:from-accent hover:to-accent text-accent hover:text-white border border-accent/40 hover:border-accent shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] hover:scale-105 active:scale-95 cursor-pointer shrink-0"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
