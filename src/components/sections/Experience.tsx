@@ -69,6 +69,8 @@ export default function Experience() {
   const [downloadingUrl, setDownloadingUrl] = useState<string | null>(null);
   const [mediaLoading, setMediaLoading] = useState<boolean>(true);
   const [pdfViewMode, setPdfViewMode] = useState<"image" | "pdf">("image");
+  const [isZipping, setIsZipping] = useState<boolean>(false);
+  const [zipStatusText, setZipStatusText] = useState<string>("");
 
   // Prevent background scrolling while modal is open
   useEffect(() => {
@@ -200,6 +202,147 @@ export default function Experience() {
     }
   };
 
+  // Download all available certificates bundled into a single ZIP archive
+  const handleDownloadAllZip = async () => {
+    if (!certificates || certificates.length === 0 || isZipping) return;
+    setIsZipping(true);
+    setZipStatusText("Preparing bundle...");
+
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+
+      // Main root folder inside the ZIP
+      const rootFolder = zip.folder("Randika_Wijesooriya_Certificates") || zip;
+
+      // Add a professional README dossier overview
+      const dateStr = new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      const readmeContent = [
+        "===========================================================",
+        "RANDIKA WIJESOORIYA - VERIFIED CREDENTIAL DOSSIER",
+        `Generated: ${dateStr}`,
+        "Portfolio: https://steelblue-baboon-677990.hostingersite.com/",
+        "===========================================================",
+        "",
+        `This package contains ${certificates.length} verified academic & professional documents:`,
+        "",
+        ...certificates.map(
+          (c, i) => `${i + 1}. [${c.category}] ${c.title} - ${c.issuer} (${c.year})`
+        ),
+        "",
+        "Thank you for reviewing my credentials!",
+        "===========================================================",
+      ].join("\n");
+      rootFolder.file("README.txt", readmeContent);
+
+      let successCount = 0;
+
+      for (let i = 0; i < certificates.length; i++) {
+        const cert = certificates[i];
+        setZipStatusText(`Packaging ${i + 1}/${certificates.length}...`);
+
+        try {
+          const fileUrl = cert.file;
+          if (!fileUrl) continue;
+
+          // 1. Fetch the file
+          let res = await fetch(fileUrl);
+          let wasJpgFallback = false;
+
+          // If Cloudinary 401 on .pdf, fetch high-res rendered JPG
+          if (
+            !res.ok &&
+            res.status === 401 &&
+            fileUrl.includes("res.cloudinary.com") &&
+            fileUrl.toLowerCase().includes(".pdf")
+          ) {
+            const fallbackUrl = fileUrl.replace(/\.pdf$/i, ".jpg");
+            res = await fetch(fallbackUrl);
+            if (res.ok) {
+              wasJpgFallback = true;
+            }
+          }
+
+          if (!res.ok) {
+            console.warn(`Could not fetch certificate "${cert.title}": HTTP ${res.status}`);
+            continue;
+          }
+
+          const blob = await res.blob();
+          const arrayBuffer = await blob.arrayBuffer();
+
+          // Determine file extension
+          let ext = wasJpgFallback ? ".jpg" : "";
+          if (!ext) {
+            const cleanUrl = fileUrl.split("?")[0];
+            const match = cleanUrl.match(/\.([a-zA-Z0-9]+)$/);
+            if (match) {
+              ext = `.${match[1]}`;
+            } else if (blob.type === "application/pdf") {
+              ext = ".pdf";
+            } else if (blob.type.includes("png")) {
+              ext = ".png";
+            } else {
+              ext = ".jpg";
+            }
+          }
+
+          // Clean title for safe filesystem filename
+          const cleanTitle =
+            cert.title.replace(/[^a-zA-Z0-9_\-\s]/g, "").trim().replace(/\s+/g, "_") ||
+            "Certificate";
+          const filename = `${String(i + 1).padStart(2, "0")}_${cleanTitle}${ext}`;
+
+          // Organize by category folder
+          const catFolderName =
+            cert.category.replace(/[^a-zA-Z0-9_\s]/g, "").trim().replace(/\s+/g, "_") ||
+            "Credentials";
+          const catFolder = rootFolder.folder(catFolderName) || rootFolder;
+          catFolder.file(filename, arrayBuffer);
+          successCount++;
+        } catch (itemErr) {
+          console.warn(`Failed to package certificate "${cert.title}":`, itemErr);
+        }
+      }
+
+      if (successCount === 0) {
+        throw new Error(
+          "Could not download any certificates. Please check your internet connection."
+        );
+      }
+
+      setZipStatusText("Compressing archive...");
+      const zipBlob = await zip.generateAsync({
+        type: "blob",
+        compression: "DEFLATE",
+        compressionOptions: { level: 6 },
+      });
+
+      // Trigger browser download
+      const blobUrl = window.URL.createObjectURL(zipBlob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "Randika_Wijesooriya_Certificates.zip";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setTimeout(() => {
+        window.URL.revokeObjectURL(blobUrl);
+      }, 2000);
+    } catch (err) {
+      console.error("ZIP creation failed:", err);
+      alert(err instanceof Error ? err.message : "Failed to generate certificate bundle.");
+    } finally {
+      setIsZipping(false);
+      setZipStatusText("");
+    }
+  };
+
   const categoryOptions = [
     { id: "All", label: "All Credentials", count: certificates?.length || 0 },
     { id: "Educational Qualification", label: "Education", count: certificates?.filter(c => c.category === "Educational Qualification").length || 0 },
@@ -308,7 +451,7 @@ export default function Experience() {
 
         {/* Certificates & Credentials Section */}
         {certificates && certificates.length > 0 && (
-          <div className="mt-20 md:mt-28 w-full pt-16 border-t border-foreground/10">
+          <div id="certificates" className="scroll-mt-24 mt-20 md:mt-28 w-full pt-16 border-t border-foreground/10">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold uppercase tracking-widest mb-4">
                 <Award className="w-3.5 h-3.5" />
@@ -323,46 +466,43 @@ export default function Experience() {
             </div>
 
             {/* Master Download All Banner */}
-            {PORTFOLIO_DATA.certificateBundle && (
-              <div className="cert-card mb-8 p-6 md:p-8 rounded-2xl bg-gradient-to-r from-accent/10 via-foreground/[0.03] to-accent/5 border border-accent/20 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
-                <div className="flex items-center gap-4 text-center sm:text-left">
-                  <div className="p-3.5 rounded-xl bg-accent/15 border border-accent/30 text-accent shrink-0 hidden sm:flex">
-                    <FolderDown className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="text-lg md:text-xl font-bold text-foreground mb-1">
-                      Complete Credential Dossier
-                    </h4>
-                    <p className="text-xs md:text-sm text-foreground/60">
-                      Download all verified certificates and academic documents in a single package.
-                    </p>
-                  </div>
+            <div className="cert-card mb-8 p-6 md:p-8 rounded-2xl bg-gradient-to-r from-accent/10 via-foreground/[0.03] to-accent/5 border border-accent/20 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
+              <div className="flex items-center gap-4 text-center sm:text-left">
+                <div className="p-3.5 rounded-xl bg-accent/15 border border-accent/30 text-accent shrink-0 hidden sm:flex">
+                  <FolderDown className="w-6 h-6" />
                 </div>
-
-                <button
-                  type="button"
-                  disabled={downloadingUrl === PORTFOLIO_DATA.certificateBundle}
-                  onClick={() =>
-                    handleDownload(
-                      PORTFOLIO_DATA.certificateBundle,
-                      "Randika_Wijesooriya_Certificates.zip"
-                    )
-                  }
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-accent text-white font-semibold text-sm hover:bg-accent/80 transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] shrink-0 group cursor-pointer disabled:opacity-60"
-                >
-                  {downloadingUrl === PORTFOLIO_DATA.certificateBundle ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
-                  )}
-                  <span>
-                    {downloadingUrl === PORTFOLIO_DATA.certificateBundle
-                      ? "Downloading..."
-                      : "Download All (.ZIP)"}
-                  </span>
-                </button>
+                <div>
+                  <h4 className="text-lg md:text-xl font-bold text-foreground mb-1 flex items-center justify-center sm:justify-start gap-2">
+                    <span>Complete Credential Dossier</span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-accent/20 text-accent font-semibold">
+                      {certificates.length} {certificates.length === 1 ? "File" : "Files"}
+                    </span>
+                  </h4>
+                  <p className="text-xs md:text-sm text-foreground/60">
+                    Download all {certificates.length} verified certificates and qualification documents in a single organized ZIP package.
+                  </p>
+                </div>
               </div>
-            )}
+
+              <button
+                type="button"
+                disabled={isZipping}
+                onClick={handleDownloadAllZip}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-accent text-white font-semibold text-sm hover:bg-accent/80 transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] shrink-0 group cursor-pointer disabled:opacity-70 disabled:cursor-wait"
+              >
+                {isZipping ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>{zipStatusText || "Generating ZIP..."}</span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+                    <span>Download All ({certificates.length} Files .ZIP)</span>
+                  </>
+                )}
+              </button>
+            </div>
 
             {/* Category Filter Tabs */}
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-10">
