@@ -41,7 +41,7 @@ export const uploadCertificateFile = (
       }
     });
 
-    // --- Success ---
+    // --- Success / Error response ---
     xhr.addEventListener("load", () => {
       if (xhr.status >= 200 && xhr.status < 300) {
         try {

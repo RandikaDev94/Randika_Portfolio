@@ -5,8 +5,20 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PORTFOLIO_DATA } from "@/constants/data";
 import { SplitText } from "@/components/ui/SplitText";
-import { CheckCircle2, Award, Download, ExternalLink, FolderDown, GraduationCap, Briefcase } from "lucide-react";
+import {
+  CheckCircle2,
+  Award,
+  Download,
+  ExternalLink,
+  FolderDown,
+  GraduationCap,
+  Briefcase,
+  Eye,
+  X,
+  Loader2,
+} from "lucide-react";
 import { usePortfolioData } from "@/context/PortfolioDataContext";
+import { CertificateItem } from "@/types/portfolio";
 
 interface TimelineItemProps {
   date: string;
@@ -52,6 +64,111 @@ export default function Experience() {
   const { certificates, experience, education } = usePortfolioData();
   const sectionRef = useRef<HTMLElement>(null);
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [viewingCert, setViewingCert] = useState<CertificateItem | null>(null);
+  const [downloadingUrl, setDownloadingUrl] = useState<string | null>(null);
+  const [mediaLoading, setMediaLoading] = useState<boolean>(true);
+
+  // Prevent background scrolling while modal is open
+  useEffect(() => {
+    if (viewingCert) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [viewingCert]);
+
+  // Close modal when pressing Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setViewingCert(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const handleOpenViewer = (cert: CertificateItem) => {
+    setMediaLoading(true);
+    setViewingCert(cert);
+  };
+
+  const isPdfFile = (url: string) => {
+    const clean = url.split("?")[0].toLowerCase();
+    return clean.endsWith(".pdf") || clean.includes(".pdf");
+  };
+
+  // Automatic download without opening a new tab
+  const handleDownload = async (fileUrl: string, title: string) => {
+    if (!fileUrl || downloadingUrl) return;
+    setDownloadingUrl(fileUrl);
+
+    try {
+      // 1. Fetch file as Blob (Cloudinary provides Access-Control-Allow-Origin: *)
+      const response = await fetch(fileUrl);
+      if (!response.ok) throw new Error(`HTTP status ${response.status}`);
+      const blob = await response.blob();
+
+      // Extract or infer file extension
+      let ext = "";
+      const cleanUrl = fileUrl.split("?")[0];
+      const match = cleanUrl.match(/\.([a-zA-Z0-9]+)$/);
+      if (match) {
+        ext = `.${match[1]}`;
+      } else if (blob.type === "application/pdf") {
+        ext = ".pdf";
+      } else if (blob.type.includes("png")) {
+        ext = ".png";
+      } else if (blob.type.includes("jpeg") || blob.type.includes("jpg")) {
+        ext = ".jpg";
+      }
+
+      // Format safe filename
+      const safeTitle = title
+        ? title.replace(/[^a-zA-Z0-9_\-\s]/g, "").trim().replace(/\s+/g, "_")
+        : "certificate";
+      const filename = safeTitle.toLowerCase().endsWith(ext.toLowerCase())
+        ? safeTitle
+        : `${safeTitle}${ext}`;
+
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setTimeout(() => {
+        window.URL.revokeObjectURL(blobUrl);
+      }, 1500);
+    } catch (err) {
+      console.warn("Direct blob download failed, falling back to forced-attachment:", err);
+
+      // 2. Fallback: If Cloudinary URL, use fl_attachment transformation which forces attachment header
+      let targetUrl = fileUrl;
+      const safeName = encodeURIComponent(
+        title ? title.replace(/[^a-zA-Z0-9_-]/g, "_").trim() : "certificate"
+      );
+
+      if (fileUrl.includes("res.cloudinary.com") && fileUrl.includes("/upload/")) {
+        targetUrl = fileUrl.replace("/upload/", `/upload/fl_attachment:${safeName}/`);
+      }
+
+      // Invisible iframe triggers download in background without opening any tab
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = targetUrl;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 5000);
+    } finally {
+      setDownloadingUrl(null);
+    }
+  };
 
   const categoryOptions = [
     { id: "All", label: "All Credentials", count: certificates?.length || 0 },
@@ -192,14 +309,28 @@ export default function Experience() {
                   </div>
                 </div>
 
-                <a
-                  href={PORTFOLIO_DATA.certificateBundle}
-                  download="Randika_Wijesooriya_Certificates.zip"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-accent text-white font-semibold text-sm hover:bg-accent/80 transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] shrink-0 group"
+                <button
+                  type="button"
+                  disabled={downloadingUrl === PORTFOLIO_DATA.certificateBundle}
+                  onClick={() =>
+                    handleDownload(
+                      PORTFOLIO_DATA.certificateBundle,
+                      "Randika_Wijesooriya_Certificates.zip"
+                    )
+                  }
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-accent text-white font-semibold text-sm hover:bg-accent/80 transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] shrink-0 group cursor-pointer disabled:opacity-60"
                 >
-                  <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
-                  <span>Download All (.ZIP)</span>
-                </a>
+                  {downloadingUrl === PORTFOLIO_DATA.certificateBundle ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+                  )}
+                  <span>
+                    {downloadingUrl === PORTFOLIO_DATA.certificateBundle
+                      ? "Downloading..."
+                      : "Download All (.ZIP)"}
+                  </span>
+                </button>
               </div>
             )}
 
@@ -258,23 +389,32 @@ export default function Experience() {
                   </div>
 
                   <div className="flex items-center gap-3 pt-4 border-t border-foreground/5">
-                    <a
-                      href={cert.file}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-foreground/5 hover:bg-foreground/10 text-foreground/80 hover:text-foreground border border-foreground/10 transition-colors"
+                    <button
+                      type="button"
+                      onClick={() => handleOpenViewer(cert)}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-foreground/5 hover:bg-foreground/10 text-foreground/80 hover:text-foreground border border-foreground/10 transition-colors cursor-pointer group/btn"
                     >
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <Eye className="w-3.5 h-3.5 text-foreground/60 group-hover/btn:text-accent transition-colors" />
                       <span>View</span>
-                    </a>
-                    <a
-                      href={cert.file}
-                      download
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-accent/10 hover:bg-accent text-accent hover:text-white border border-accent/20 hover:border-accent transition-all shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:shadow-[0_0_20px_rgba(59,130,246,0.35)]"
+                    </button>
+                    <button
+                      type="button"
+                      disabled={downloadingUrl === cert.file}
+                      onClick={() => handleDownload(cert.file, cert.title)}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-accent/10 hover:bg-accent text-accent hover:text-white border border-accent/20 hover:border-accent transition-all shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:shadow-[0_0_20px_rgba(59,130,246,0.35)] cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                     >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>Download</span>
-                    </a>
+                      {downloadingUrl === cert.file ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Downloading...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Download className="w-3.5 h-3.5" />
+                          <span>Download</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 </div>
               ))}
@@ -282,6 +422,111 @@ export default function Experience() {
           </div>
         )}
       </div>
+
+      {/* Lightbox / Popup Viewer Modal */}
+      {viewingCert && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-5 md:p-8 bg-black/80 backdrop-blur-md transition-opacity duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setViewingCert(null);
+            }
+          }}
+        >
+          <div className="relative w-full max-w-4xl max-h-[92vh] bg-[#0c1222] border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between gap-3 sm:gap-4 p-4 sm:p-5 border-b border-white/10 bg-[#0f172a]/95 backdrop-blur-sm">
+              <div className="flex-1 min-w-0 pr-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-accent/10 border border-accent/20 text-accent shrink-0">
+                    {getCategoryIcon(viewingCert.category)}
+                    <span>{viewingCert.category}</span>
+                  </span>
+                  <span className="text-xs text-foreground/40 font-medium">
+                    {viewingCert.year}
+                  </span>
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-foreground truncate">
+                  {viewingCert.title}
+                </h3>
+                <p className="text-xs text-foreground/60 truncate">
+                  {viewingCert.issuer}
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  disabled={downloadingUrl === viewingCert.file}
+                  onClick={() => handleDownload(viewingCert.file, viewingCert.title)}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold bg-accent text-white hover:bg-accent/80 transition-all shadow-sm cursor-pointer disabled:opacity-60"
+                  title="Download File"
+                >
+                  {downloadingUrl === viewingCert.file ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Download className="w-3.5 h-3.5" />
+                  )}
+                  <span className="hidden sm:inline">
+                    {downloadingUrl === viewingCert.file ? "Downloading..." : "Download"}
+                  </span>
+                </button>
+
+                <a
+                  href={viewingCert.file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+                  title="Open in new tab"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+
+                <button
+                  type="button"
+                  onClick={() => setViewingCert(null)}
+                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+                  title="Close (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body / Viewer */}
+            <div className="relative flex-1 overflow-auto bg-[#070b14] flex items-center justify-center min-h-[350px]">
+              {mediaLoading && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#070b14]/90 z-10 text-foreground/60">
+                  <Loader2 className="w-7 h-7 animate-spin text-accent" />
+                  <span className="text-xs font-medium tracking-wide">Loading credential...</span>
+                </div>
+              )}
+
+              {isPdfFile(viewingCert.file) ? (
+                <iframe
+                  src={viewingCert.file}
+                  className="w-full h-[65vh] md:h-[75vh] border-0 bg-white"
+                  title={viewingCert.title}
+                  onLoad={() => setMediaLoading(false)}
+                />
+              ) : (
+                <div className="p-4 sm:p-6 flex items-center justify-center w-full h-full">
+                  <img
+                    src={viewingCert.file}
+                    alt={viewingCert.title}
+                    onLoad={() => setMediaLoading(false)}
+                    onError={() => setMediaLoading(false)}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl shadow-2xl"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
