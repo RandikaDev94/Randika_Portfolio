@@ -54,10 +54,10 @@ export const uploadCertificateFile = (
             reject(
               new Error(
                 `Cloudinary error: ${data.error.message}. ` +
-                  'Make sure the upload preset "' +
-                  CLOUDINARY_UPLOAD_PRESET +
-                  '" exists and is set to Unsigned in your Cloudinary dashboard ' +
-                  "(Settings → Upload → Upload presets)."
+                'Make sure the upload preset "' +
+                CLOUDINARY_UPLOAD_PRESET +
+                '" exists and is set to Unsigned in your Cloudinary dashboard ' +
+                "(Settings → Upload → Upload presets)."
               )
             );
             return;
@@ -96,9 +96,9 @@ export const uploadCertificateFile = (
       reject(
         new Error(
           "Network error during upload. Check your internet connection and that " +
-            "your Cloudinary cloud name is correct (" +
-            CLOUDINARY_CLOUD_NAME +
-            ")."
+          "your Cloudinary cloud name is correct (" +
+          CLOUDINARY_CLOUD_NAME +
+          ")."
         )
       );
     });

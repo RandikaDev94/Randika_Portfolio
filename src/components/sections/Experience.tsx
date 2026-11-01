@@ -64,7 +64,7 @@ const TimelineItem = ({ date, title, subtitle, descriptions, isLeft }: TimelineI
 export default function Experience() {
   const { certificates, experience, education } = usePortfolioData();
   const sectionRef = useRef<HTMLElement>(null);
-  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [viewingCert, setViewingCert] = useState<CertificateItem | null>(null);
   const [downloadingUrl, setDownloadingUrl] = useState<string | null>(null);
   const [mediaLoading, setMediaLoading] = useState<boolean>(true);
@@ -350,7 +350,7 @@ export default function Experience() {
     { id: "Service Letter", label: "Service Letters", count: certificates?.filter(c => c.category === "Service Letter").length || 0 },
   ];
 
-  const filteredCertificates = certificates
+  const filteredCertificates = certificates && activeCategory
     ? activeCategory === "All"
       ? certificates
       : certificates.filter((c) => c.category === activeCategory)
@@ -362,6 +362,8 @@ export default function Experience() {
         return <GraduationCap className="w-4 h-4 text-accent" />;
       case "Service Letter":
         return <Briefcase className="w-4 h-4 text-accent" />;
+      case "All":
+        return <Award className="w-4 h-4 text-accent" />;
       default:
         return <Award className="w-4 h-4 text-accent" />;
     }
@@ -512,7 +514,7 @@ export default function Experience() {
                   <button
                     key={cat.id}
                     type="button"
-                    onClick={() => setActiveCategory(cat.id)}
+                    onClick={() => setActiveCategory((prev) => (prev === cat.id ? null : cat.id))}
                     className={`px-4 py-2 sm:px-5 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-2 cursor-pointer ${
                       isActive
                         ? "bg-accent text-white shadow-[0_0_20px_rgba(59,130,246,0.35)] scale-105"
@@ -532,63 +534,97 @@ export default function Experience() {
               })}
             </div>
 
-            {/* Individual Certificate Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-              {filteredCertificates.map((cert, idx) => (
-                <div
-                  key={`cert-${cert.title}-${idx}`}
-                  className="cert-card p-6 md:p-7 rounded-2xl bg-foreground/[0.03] border border-foreground/5 hover:bg-foreground/[0.06] hover:border-accent/30 transition-all duration-300 flex flex-col justify-between group"
-                >
-                  <div>
-                    <div className="flex items-center justify-between gap-3 mb-4">
-                      <span className="inline-flex items-center gap-1.5 text-[10px] md:text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent">
-                        {getCategoryIcon(cert.category)}
-                        <span>{cert.category}</span>
+            {/* Individual Certificate Cards Grid or Category Selection Prompt */}
+            {activeCategory === null ? (
+              <div className="p-8 md:p-12 rounded-2xl bg-foreground/[0.02] border border-dashed border-foreground/15 backdrop-blur-sm max-w-2xl mx-auto text-center flex flex-col items-center justify-center transition-all duration-300">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 text-accent flex items-center justify-center mb-4 shadow-[0_0_25px_rgba(59,130,246,0.15)]">
+                  <Award className="w-7 h-7" />
+                </div>
+                <h4 className="text-lg md:text-xl font-bold text-foreground mb-2">
+                  Select a Credential Category
+                </h4>
+                <p className="text-xs md:text-sm text-foreground/60 max-w-md mb-6 leading-relaxed">
+                  Click on any category above to view verified academic degrees, professional qualifications, and service letters.
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  {categoryOptions.map((cat) => (
+                    <button
+                      key={`prompt-${cat.id}`}
+                      type="button"
+                      onClick={() => setActiveCategory(cat.id)}
+                      className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-foreground/5 hover:bg-accent/15 text-foreground/80 hover:text-accent border border-foreground/10 hover:border-accent/30 transition-all cursor-pointer"
+                    >
+                      {getCategoryIcon(cat.id)}
+                      <span>{cat.label}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-foreground/10 font-bold">
+                        {cat.count}
                       </span>
-                      <span className="text-xs text-foreground/40 font-medium">
-                        {cert.year}
-                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : filteredCertificates.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 animate-in fade-in duration-300">
+                {filteredCertificates.map((cert, idx) => (
+                  <div
+                    key={`cert-${cert.title}-${idx}`}
+                    className="cert-card p-6 md:p-7 rounded-2xl bg-foreground/[0.03] border border-foreground/5 hover:bg-foreground/[0.06] hover:border-accent/30 transition-all duration-300 flex flex-col justify-between group"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-3 mb-4">
+                        <span className="inline-flex items-center gap-1.5 text-[10px] md:text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent">
+                          {getCategoryIcon(cert.category)}
+                          <span>{cert.category}</span>
+                        </span>
+                        <span className="text-xs text-foreground/40 font-medium">
+                          {cert.year}
+                        </span>
+                      </div>
+
+                      <h4 className="text-lg md:text-xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors">
+                        {cert.title}
+                      </h4>
+                      <p className="text-xs md:text-sm text-foreground/60 font-medium mb-6">
+                        {cert.issuer}
+                      </p>
                     </div>
 
-                    <h4 className="text-lg md:text-xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors">
-                      {cert.title}
-                    </h4>
-                    <p className="text-xs md:text-sm text-foreground/60 font-medium mb-6">
-                      {cert.issuer}
-                    </p>
+                    <div className="flex items-center gap-3 pt-4 border-t border-foreground/5">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenViewer(cert)}
+                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-foreground/5 hover:bg-foreground/10 text-foreground/80 hover:text-foreground border border-foreground/10 transition-colors cursor-pointer group/btn"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-foreground/60 group-hover/btn:text-accent transition-colors" />
+                        <span>View</span>
+                      </button>
+                      <button
+                        type="button"
+                        disabled={downloadingUrl === cert.file}
+                        onClick={() => handleDownload(cert.file, cert.title)}
+                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-accent/10 hover:bg-accent text-accent hover:text-white border border-accent/20 hover:border-accent transition-all shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:shadow-[0_0_20px_rgba(59,130,246,0.35)] cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+                      >
+                        {downloadingUrl === cert.file ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>Downloading...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Download className="w-3.5 h-3.5" />
+                            <span>Download</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
-
-                  <div className="flex items-center gap-3 pt-4 border-t border-foreground/5">
-                    <button
-                      type="button"
-                      onClick={() => handleOpenViewer(cert)}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-foreground/5 hover:bg-foreground/10 text-foreground/80 hover:text-foreground border border-foreground/10 transition-colors cursor-pointer group/btn"
-                    >
-                      <Eye className="w-3.5 h-3.5 text-foreground/60 group-hover/btn:text-accent transition-colors" />
-                      <span>View</span>
-                    </button>
-                    <button
-                      type="button"
-                      disabled={downloadingUrl === cert.file}
-                      onClick={() => handleDownload(cert.file, cert.title)}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-accent/10 hover:bg-accent text-accent hover:text-white border border-accent/20 hover:border-accent transition-all shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:shadow-[0_0_20px_rgba(59,130,246,0.35)] cursor-pointer disabled:opacity-60 disabled:cursor-wait"
-                    >
-                      {downloadingUrl === cert.file ? (
-                        <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          <span>Downloading...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Download className="w-3.5 h-3.5" />
-                          <span>Download</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-foreground/50 text-sm">
+                No certificates found in this category.
+              </div>
+            )}
           </div>
         )}
       </div>

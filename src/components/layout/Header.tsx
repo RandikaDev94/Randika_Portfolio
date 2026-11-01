@@ -20,7 +20,7 @@ const navLinks = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   const lenis = useLenis();
 
   useEffect(() => {
@@ -43,13 +43,13 @@ export default function Header() {
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, target: string) => {
     e.preventDefault();
     setMobileMenuOpen(false); // Make sure mobile menu closes on click
-    
+
     if (lenis) {
       // Use Lenis buttery smooth scroll engine
       lenis.scrollTo(target, {
         duration: 1.2,
         offset: 0,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) 
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
       });
     } else {
       // Fallback for native standard
@@ -59,9 +59,8 @@ export default function Header() {
 
   return (
     <motion.header
-      className={`fixed top-0 left-0 right-0 z-50 will-change-[background-color,backdrop-filter] [transform:translateZ(0)] [backface-visibility:hidden] transition-all duration-200 ease-in-out border-b ${
-        isScrolled ? "bg-background/80 backdrop-blur-md border-white/5" : "bg-transparent border-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 will-change-[background-color,backdrop-filter] [transform:translateZ(0)] [backface-visibility:hidden] transition-all duration-200 ease-in-out border-b ${isScrolled ? "bg-background/80 backdrop-blur-md border-white/5" : "bg-transparent border-transparent"
+        }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
