@@ -536,35 +536,16 @@ export default function Experience() {
 
             {/* Individual Certificate Cards Grid or Category Selection Prompt */}
             {activeCategory === null ? (
-              <div className="p-8 md:p-12 rounded-2xl bg-foreground/[0.02] border border-dashed border-foreground/15 backdrop-blur-sm max-w-2xl mx-auto text-center flex flex-col items-center justify-center transition-all duration-300">
+              <div className="py-10 max-w-2xl mx-auto text-center flex flex-col items-center justify-center">
                 <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 text-accent flex items-center justify-center mb-4 shadow-[0_0_25px_rgba(59,130,246,0.15)]">
                   <Award className="w-7 h-7" />
                 </div>
-                <h4 className="text-lg md:text-xl font-bold text-foreground mb-2">
+                <h4 className="text-lg md:text-xl font-bold text-foreground">
                   Select a Credential Category
                 </h4>
-                <p className="text-xs md:text-sm text-foreground/60 max-w-md mb-6 leading-relaxed">
-                  Click on any category above to view verified academic degrees, professional qualifications, and service letters.
-                </p>
-                <div className="flex flex-wrap items-center justify-center gap-2">
-                  {categoryOptions.map((cat) => (
-                    <button
-                      key={`prompt-${cat.id}`}
-                      type="button"
-                      onClick={() => setActiveCategory(cat.id)}
-                      className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-foreground/5 hover:bg-accent/15 text-foreground/80 hover:text-accent border border-foreground/10 hover:border-accent/30 transition-all cursor-pointer"
-                    >
-                      {getCategoryIcon(cat.id)}
-                      <span>{cat.label}</span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-foreground/10 font-bold">
-                        {cat.count}
-                      </span>
-                    </button>
-                  ))}
-                </div>
               </div>
             ) : filteredCertificates.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 animate-in fade-in duration-300">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                 {filteredCertificates.map((cert, idx) => (
                   <div
                     key={`cert-${cert.title}-${idx}`}
